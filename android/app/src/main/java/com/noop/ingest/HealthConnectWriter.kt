@@ -228,14 +228,19 @@ object HealthConnectWriter {
         val floor = now - WINDOW_DAYS * 86_400
         val frontier = maxOf(NoopPrefs.hcHrFrontier(context), floor)
 
-        val samples = repo.hrSamplesForDevice(deviceId, from = frontier + 1, to = now, limit = 200_000)
+        // Fork fix: read the same active ∪ archived ∪ canonical union every other HR reader uses
+        // ([WhoopRepository.hrSamplesUnion], #908/#1193). A single-id read of the active strap exports
+        // NOTHING when the raw stream is banked under another registered id (the diagnostics'
+        // "samples are under 'my-whoop' instead" split), freezing Health Connect heart rate while the
+        // rest of the app still sees it. Single-WHOOP installs resolve to one id, so this is unchanged there.
+        val samples = repo.hrSamplesUnion(deviceId, from = frontier + 1, to = now, limit = 200_000)
             .map { HealthExportPlan.HrPoint(it.ts, it.bpm) }
         if (samples.isEmpty()) return 0
 
         // Workout + sleep windows where the full-resolution series matters; everything else decimates.
         val windows = buildList {
-            repo.workouts(deviceId, frontier, now).forEach { add(HealthExportPlan.Window(it.startTs, it.endTs)) }
-            repo.sleepSessionsForDevice(deviceId, frontier, now).forEach { add(HealthExportPlan.Window(it.startTs, it.endTs)) }
+            repo.workoutsUnion(deviceId, frontier, now).forEach { add(HealthExportPlan.Window(it.startTs, it.endTs)) }
+            repo.sleepSessionsUnion(deviceId, frontier, now).forEach { add(HealthExportPlan.Window(it.startTs, it.endTs)) }
         }
 
         val plan = HealthExportPlan.heartRate(samples, windows, frontier)
