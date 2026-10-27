@@ -1541,6 +1541,22 @@ fun SettingsScreen(
                 )
             }
             SettingsRowDivider()
+            // Fork: Slate look — one switch for the calm slate canvas, ring gauges, solid cards and a trimmed
+            // Today. Off restores exactly what it changed. The local mirrors below are re-read so the rows
+            // under it reflect the new values at once.
+            SettingsToggleRow(
+                title = uiString(R.string.fork_slate_look_title),
+                detail = uiString(R.string.fork_slate_look_detail),
+                checked = SlateLook.enabled,
+                onCheckedChange = {
+                    SlateLook.setEnabled(context, it)
+                    themeMode = AppearancePrefs.mode
+                    todayRingGauges = NoopPrefs.todayRingGauges(context)
+                    showDayCycleBackground = NoopPrefs.showDayCycleBackground(context)
+                    cardOpacity = NoopPrefs.cardOpacityPercent(context) / 100f
+                },
+            )
+            SettingsRowDivider()
             // Theme presets — one-tap bundles coordinating accent + chart world + backdrop + card opacity.
             // Derived (no stored value): tweaking any control below flips this to Custom.
             SettingsFormRow(label = uiString(R.string.l10n_settings_screen_preset)) {
