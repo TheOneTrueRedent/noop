@@ -2866,4 +2866,20 @@
     <string name="slate_check_ranges">健康监测中的个人正常范围</string>
     <string name="slate_check_stable">%1$d 晚后基线稳定</string>
     <string name="slate_wear_hint">夜间佩戴手环——每一晚都让你的分数更个性化。</string>
+    <string name="slate_more_about_charge">了解更多 Charge</string>
+    <string name="slate_more_about_effort">了解更多 Effort</string>
+    <string name="slate_more_about_sleep">了解更多睡眠信息</string>
+    <string name="slate_no_effort_yet">这一天还没有记录 Effort。</string>
+    <string name="slate_no_sleep_yet">这一天还没有记录睡眠。</string>
+    <string name="slate_hours_vs_need">时长与需求</string>
+    <string name="slate_sleep_efficiency">睡眠效率</string>
+    <string name="slate_restorative_sleep">恢复性睡眠</string>
+    <string name="slate_disturbances">睡眠干扰</string>
+    <string name="slate_tier_insufficient">不足</string>
+    <string name="slate_tier_sufficient">充足</string>
+    <string name="slate_tier_optimal">最佳</string>
+    <string name="slate_back">返回</string>
+    <string name="slate_heart_rate">心率</string>
+    <string name="slate_calibrating_range">正在校准范围</string>
+    <string name="slate_bpm">次/分</string>
 </resources>

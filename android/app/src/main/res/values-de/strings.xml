@@ -2909,4 +2909,20 @@
     <string name="slate_check_ranges">Deine normalen Bereiche im Gesundheitsmonitor</string>
     <string name="slate_check_stable">Stabile Baselines nach %1$d Nächten</string>
     <string name="slate_wear_hint">Trage dein Band nachts – jede Nacht macht deine Werte persönlicher.</string>
+    <string name="slate_more_about_charge">Mehr zu Charge</string>
+    <string name="slate_more_about_effort">Mehr zu Effort</string>
+    <string name="slate_more_about_sleep">Mehr zu deinem Schlaf</string>
+    <string name="slate_no_effort_yet">Für diesen Tag wurde noch kein Effort erfasst.</string>
+    <string name="slate_no_sleep_yet">Für diesen Tag wurde noch kein Schlaf erfasst.</string>
+    <string name="slate_hours_vs_need">Stunden vs. Bedarf</string>
+    <string name="slate_sleep_efficiency">Schlafeffizienz</string>
+    <string name="slate_restorative_sleep">Erholsamer Schlaf</string>
+    <string name="slate_disturbances">Störungen</string>
+    <string name="slate_tier_insufficient">Unzureichend</string>
+    <string name="slate_tier_sufficient">Ausreichend</string>
+    <string name="slate_tier_optimal">Optimal</string>
+    <string name="slate_back">Zurück</string>
+    <string name="slate_heart_rate">Herzfrequenz</string>
+    <string name="slate_calibrating_range">Bereich wird kalibriert</string>
+    <string name="slate_bpm">BPM</string>
 </resources>

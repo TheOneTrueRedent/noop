@@ -2895,4 +2895,20 @@
     <string name="slate_check_ranges">Vos plages normales dans le moniteur de santé</string>
     <string name="slate_check_stable">Références stables après %1$d nuits</string>
     <string name="slate_wear_hint">Portez votre bracelet la nuit : chaque nuit rend vos scores plus personnels.</string>
+    <string name="slate_more_about_charge">En savoir plus sur Charge</string>
+    <string name="slate_more_about_effort">En savoir plus sur Effort</string>
+    <string name="slate_more_about_sleep">En savoir plus sur votre sommeil</string>
+    <string name="slate_no_effort_yet">Aucun Effort enregistré pour ce jour.</string>
+    <string name="slate_no_sleep_yet">Aucun sommeil enregistré pour ce jour.</string>
+    <string name="slate_hours_vs_need">Heures vs besoin</string>
+    <string name="slate_sleep_efficiency">Efficacité du sommeil</string>
+    <string name="slate_restorative_sleep">Sommeil réparateur</string>
+    <string name="slate_disturbances">Perturbations</string>
+    <string name="slate_tier_insufficient">Insuffisant</string>
+    <string name="slate_tier_sufficient">Suffisant</string>
+    <string name="slate_tier_optimal">Optimal</string>
+    <string name="slate_back">Retour</string>
+    <string name="slate_heart_rate">Fréquence cardiaque</string>
+    <string name="slate_calibrating_range">Plage en calibrage</string>
+    <string name="slate_bpm">BPM</string>
 </resources>

@@ -2925,4 +2925,20 @@
     <string name="slate_check_ranges">Your normal ranges in the Health monitor</string>
     <string name="slate_check_stable">Stable baselines after %1$d nights</string>
     <string name="slate_wear_hint">Wear your strap at night – every night makes your scores more personal.</string>
+    <string name="slate_more_about_charge">More about Charge</string>
+    <string name="slate_more_about_effort">More about Effort</string>
+    <string name="slate_more_about_sleep">More about your sleep</string>
+    <string name="slate_no_effort_yet">No Effort recorded for this day yet.</string>
+    <string name="slate_no_sleep_yet">No sleep has been recorded for this day yet.</string>
+    <string name="slate_hours_vs_need">Hours vs. need</string>
+    <string name="slate_sleep_efficiency">Sleep efficiency</string>
+    <string name="slate_restorative_sleep">Restorative sleep</string>
+    <string name="slate_disturbances">Disturbances</string>
+    <string name="slate_tier_insufficient">Insufficient</string>
+    <string name="slate_tier_sufficient">Sufficient</string>
+    <string name="slate_tier_optimal">Optimal</string>
+    <string name="slate_back">Back</string>
+    <string name="slate_heart_rate">Heart rate</string>
+    <string name="slate_calibrating_range">Calibrating range</string>
+    <string name="slate_bpm">BPM</string>
 </resources>

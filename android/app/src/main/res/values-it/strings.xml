@@ -2864,4 +2864,20 @@
     <string name="slate_check_ranges">I tuoi intervalli normali nel monitor salute</string>
     <string name="slate_check_stable">Valori di riferimento stabili dopo %1$d notti</string>
     <string name="slate_wear_hint">Indossa il bracciale di notte: ogni notte rende i punteggi più personali.</string>
+    <string name="slate_more_about_charge">Altro su Charge</string>
+    <string name="slate_more_about_effort">Altro su Effort</string>
+    <string name="slate_more_about_sleep">Altro sul tuo sonno</string>
+    <string name="slate_no_effort_yet">Nessun Effort registrato per questo giorno.</string>
+    <string name="slate_no_sleep_yet">Nessun sonno registrato per questo giorno.</string>
+    <string name="slate_hours_vs_need">Ore vs fabbisogno</string>
+    <string name="slate_sleep_efficiency">Efficienza del sonno</string>
+    <string name="slate_restorative_sleep">Sonno ristoratore</string>
+    <string name="slate_disturbances">Disturbi</string>
+    <string name="slate_tier_insufficient">Insufficiente</string>
+    <string name="slate_tier_sufficient">Sufficiente</string>
+    <string name="slate_tier_optimal">Ottimale</string>
+    <string name="slate_back">Indietro</string>
+    <string name="slate_heart_rate">Frequenza cardiaca</string>
+    <string name="slate_calibrating_range">Calibrazione intervallo</string>
+    <string name="slate_bpm">BPM</string>
 </resources>

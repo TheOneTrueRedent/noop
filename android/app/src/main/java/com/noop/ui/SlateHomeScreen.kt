@@ -167,6 +167,8 @@ fun SlateHomeScreen(
     onOpenInsights: () -> Unit,
     onOpenCoach: () -> Unit,
     onOpenTrends: () -> Unit,
+    onOpenDetail: (String) -> Unit,
+    onOpenHealthMonitor: () -> Unit,
 ) {
     val context = LocalContext.current
     val today by vm.today.collectAsStateWithLifecycle()
@@ -306,7 +308,7 @@ fun SlateHomeScreen(
                     valueText = rest?.let { "${it.roundToInt()}%" },
                     fraction = (rest ?: 0.0) / 100.0,
                     color = DomainTheme.Rest.color,
-                    onClick = onOpenSleep,
+                    onClick = { onOpenDetail("rest") },
                 )
                 SlateDial(
                     label = uiString(R.string.trends_charge),
@@ -314,14 +316,14 @@ fun SlateHomeScreen(
                     pending = charge == null && calibrationNights != null,
                     fraction = (charge ?: 0.0) / 100.0,
                     color = charge?.let { Palette.recoveryColor(it) } ?: DomainTheme.Charge.color,
-                    onClick = { showChargeBreakdown = true },
+                    onClick = { onOpenDetail("charge") },
                 )
                 SlateDial(
                     label = uiString(R.string.trends_effort),
                     valueText = effort?.let { String.format(Locale.getDefault(), "%.1f", it) },
                     fraction = (effort ?: 0.0) / effortMax,
                     color = DomainTheme.Effort.color,
-                    onClick = { onOpenMetric(HERO_EFFORT_METRIC_KEY) },
+                    onClick = { onOpenDetail("effort") },
                 )
             }
 
@@ -340,7 +342,7 @@ fun SlateHomeScreen(
                     SlateMonitorTile(
                         title = uiString(R.string.slate_health_monitor),
                         modifier = Modifier.weight(1f),
-                        onClick = onOpenHealth,
+                        onClick = onOpenHealthMonitor,
                     ) {
                         when (val s = healthStatus) {
                             SlateHealthStatus.Calibrating -> SlateStatusLine(Icons.Filled.HourglassEmpty,

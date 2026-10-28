@@ -2912,4 +2912,20 @@
     <string name="slate_check_ranges">Twoje normalne zakresy w monitorze zdrowia</string>
     <string name="slate_check_stable">Stabilne wartości bazowe po %1$d nocach</string>
     <string name="slate_wear_hint">Noś opaskę w nocy – każda noc sprawia, że wyniki są bardziej osobiste.</string>
+    <string name="slate_more_about_charge">Więcej o Charge</string>
+    <string name="slate_more_about_effort">Więcej o Effort</string>
+    <string name="slate_more_about_sleep">Więcej o Twoim śnie</string>
+    <string name="slate_no_effort_yet">Brak zapisanego Effort dla tego dnia.</string>
+    <string name="slate_no_sleep_yet">Brak zapisanego snu dla tego dnia.</string>
+    <string name="slate_hours_vs_need">Godziny vs potrzeba</string>
+    <string name="slate_sleep_efficiency">Efektywność snu</string>
+    <string name="slate_restorative_sleep">Sen regenerujący</string>
+    <string name="slate_disturbances">Zakłócenia</string>
+    <string name="slate_tier_insufficient">Niewystarczający</string>
+    <string name="slate_tier_sufficient">Wystarczający</string>
+    <string name="slate_tier_optimal">Optymalny</string>
+    <string name="slate_back">Wstecz</string>
+    <string name="slate_heart_rate">Tętno</string>
+    <string name="slate_calibrating_range">Kalibracja zakresu</string>
+    <string name="slate_bpm">BPM</string>
 </resources>

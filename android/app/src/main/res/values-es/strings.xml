@@ -2896,4 +2896,20 @@
     <string name="slate_check_ranges">Tus rangos normales en el monitor de salud</string>
     <string name="slate_check_stable">Referencias estables tras %1$d noches</string>
     <string name="slate_wear_hint">Lleva la pulsera por la noche: cada noche hace tus puntuaciones más personales.</string>
+    <string name="slate_more_about_charge">Más sobre Charge</string>
+    <string name="slate_more_about_effort">Más sobre Effort</string>
+    <string name="slate_more_about_sleep">Más sobre tu sueño</string>
+    <string name="slate_no_effort_yet">Aún no hay Effort registrado para este día.</string>
+    <string name="slate_no_sleep_yet">Aún no se ha registrado sueño para este día.</string>
+    <string name="slate_hours_vs_need">Horas vs. necesidad</string>
+    <string name="slate_sleep_efficiency">Eficiencia del sueño</string>
+    <string name="slate_restorative_sleep">Sueño reparador</string>
+    <string name="slate_disturbances">Interrupciones</string>
+    <string name="slate_tier_insufficient">Insuficiente</string>
+    <string name="slate_tier_sufficient">Suficiente</string>
+    <string name="slate_tier_optimal">Óptimo</string>
+    <string name="slate_back">Atrás</string>
+    <string name="slate_heart_rate">Frecuencia cardíaca</string>
+    <string name="slate_calibrating_range">Calibrando rango</string>
+    <string name="slate_bpm">LPM</string>
 </resources>

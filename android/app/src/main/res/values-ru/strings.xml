@@ -2791,4 +2791,20 @@
     <string name="slate_check_ranges">Ваши нормальные диапазоны в мониторе здоровья</string>
     <string name="slate_check_stable">Стабильные базовые значения после %1$d ночей</string>
     <string name="slate_wear_hint">Носите браслет ночью — каждая ночь делает оценки точнее.</string>
+    <string name="slate_more_about_charge">Подробнее о Charge</string>
+    <string name="slate_more_about_effort">Подробнее об Effort</string>
+    <string name="slate_more_about_sleep">Подробнее о вашем сне</string>
+    <string name="slate_no_effort_yet">За этот день Effort ещё не записан.</string>
+    <string name="slate_no_sleep_yet">За этот день сон ещё не записан.</string>
+    <string name="slate_hours_vs_need">Часы и потребность</string>
+    <string name="slate_sleep_efficiency">Эффективность сна</string>
+    <string name="slate_restorative_sleep">Восстановительный сон</string>
+    <string name="slate_disturbances">Нарушения</string>
+    <string name="slate_tier_insufficient">Недостаточно</string>
+    <string name="slate_tier_sufficient">Достаточно</string>
+    <string name="slate_tier_optimal">Оптимально</string>
+    <string name="slate_back">Назад</string>
+    <string name="slate_heart_rate">Пульс</string>
+    <string name="slate_calibrating_range">Диапазон калибруется</string>
+    <string name="slate_bpm">уд/мин</string>
 </resources>

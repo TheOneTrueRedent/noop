@@ -642,6 +642,8 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
                             onOpenInsights = { nav.navigate(Destination.InsightsHub.route) },
                             onOpenCoach = { nav.navigateTopLevel(Destination.Coach.route) },
                             onOpenTrends = { nav.navigateTopLevel(Destination.Trends.route) },
+                            onOpenDetail = { kind -> nav.navigate(slateDetailRoute(kind)) },
+                            onOpenHealthMonitor = { nav.navigate(SLATE_HEALTH_MONITOR_ROUTE) },
                         )
                         return@composable
                     }
@@ -688,6 +690,29 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
                         // #627: the journal-reminder card opens the journal (hosted in Insights), same
                         // destination the Sleep screen's morning sheet uses.
                         onOpenJournal = { nav.navigateTopLevel(Destination.Insights.route) },
+                    )
+                }
+                // Fork: Slate layout detail screens (score detail per dial, Health monitor).
+                composable(SLATE_DETAIL_ROUTE) { entry ->
+                    val kind = entry.arguments?.getString("kind") ?: "rest"
+                    SlateScoreDetailScreen(
+                        vm = viewModel,
+                        kind = kind,
+                        onBack = { nav.popBackStack() },
+                        onMore = {
+                            when (kind) {
+                                "charge" -> nav.navigate("vital_detail/recovery")
+                                "effort" -> nav.navigate("vital_detail/$HERO_EFFORT_METRIC_KEY")
+                                else -> nav.navigateTopLevel(Destination.Sleep.route)
+                            }
+                        },
+                    )
+                }
+                composable(SLATE_HEALTH_MONITOR_ROUTE) {
+                    SlateHealthMonitorScreen(
+                        vm = viewModel,
+                        onBack = { nav.popBackStack() },
+                        onOpenVital = { key -> nav.navigate("vital_detail/$key") },
                     )
                 }
                 composable(Destination.Live.route) {

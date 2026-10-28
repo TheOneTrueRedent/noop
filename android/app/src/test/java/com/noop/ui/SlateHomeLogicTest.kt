@@ -57,4 +57,34 @@ class SlateHomeLogicTest {
             slateTabs(),
         )
     }
+
+    @Test
+    fun contributorTiersBothDirections() {
+        assertEquals(SlateTier.OPTIMAL, slateBand(90.0, 70.0, 85.0))
+        assertEquals(SlateTier.SUFFICIENT, slateBand(70.0, 70.0, 85.0))
+        assertEquals(SlateTier.INSUFFICIENT, slateBand(69.9, 70.0, 85.0))
+        assertNull(slateBand(null, 70.0, 85.0))
+        // Disturbances: fewer is better.
+        assertEquals(SlateTier.OPTIMAL, slateBand(5.0, 10.0, 5.0, higherIsBetter = false))
+        assertEquals(SlateTier.SUFFICIENT, slateBand(8.0, 10.0, 5.0, higherIsBetter = false))
+        assertEquals(SlateTier.INSUFFICIENT, slateBand(11.0, 10.0, 5.0, higherIsBetter = false))
+    }
+
+    @Test
+    fun vsBaselineUsesDirection() {
+        assertEquals(SlateTier.OPTIMAL, slateVsBaseline(55.0, 50.0, higherIsBetter = true))
+        assertEquals(SlateTier.INSUFFICIENT, slateVsBaseline(40.0, 50.0, higherIsBetter = true))
+        assertEquals(SlateTier.OPTIMAL, slateVsBaseline(55.0, 58.0, higherIsBetter = false))
+        assertEquals(SlateTier.INSUFFICIENT, slateVsBaseline(70.0, 58.0, higherIsBetter = false))
+        assertNull(slateVsBaseline(50.0, null, true))
+    }
+
+    @Test
+    fun restorativeAndPercentHelpers() {
+        val d = com.noop.data.DailyMetric(deviceId = "x", day = "2026-10-27", totalSleepMin = 400.0, deepMin = 80.0, remMin = 80.0)
+        assertEquals(40.0, slateRestorativePct(d)!!, 1e-9)
+        assertNull(slateRestorativePct(d.copy(remMin = null)))
+        assertEquals(88.0, slatePercent(0.88)!!, 1e-9)
+        assertEquals(88.0, slatePercent(88.0)!!, 1e-9)
+    }
 }
