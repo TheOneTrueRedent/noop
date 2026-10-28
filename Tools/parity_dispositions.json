@@ -436,6 +436,30 @@
       "identity_sha256": "6aa52285ae46cf0ae75a690feee01765f9401825b6c9845c146163fdf5b2bb3e",
       "platform": "swift",
       "rationale": "A LOCAL binding inside the private v16 ECG decoder (#2847), not a static constant. The ledger's Swift rule treats any four-space `let` in a file-scope function as a candidate `static let`, which is how it finds file-scope constants without parsing, so a local in a top-level `private func` lands in the inventory. The Kotlin twin's equivalent is a local `val` in its own decodeWhoop5HistoricalV16, which the Kotlin rule never inventories because it matches `const val` only, and a Set-valued or object-valued local cannot be `const` in Kotlin at all. There is nothing to pair and nothing to change in either decoder."
+    },
+    {
+      "type": "platform_specific",
+      "kind": "add-unpaired-constant",
+      "identity": "kotlin\u0000android/app/src/main/java/com/noop/ingest/HealthConnectWriter.kt::HC_MIN_BPM",
+      "identity_sha256": "780d5d78a51f17210b283fbe4357bb7e2466b8bb882bd52bc221c7e4af8e48b5",
+      "platform": "kotlin",
+      "rationale": "Bounds of the Health Connect HeartRateRecord sample range; Health Connect rejects a whole insert containing an out-of-range sample, so the Android exporter drops those first. Apple Health has no equivalent per-record bound in this path."
+    },
+    {
+      "type": "platform_specific",
+      "kind": "add-unpaired-constant",
+      "identity": "kotlin\u0000android/app/src/main/java/com/noop/ingest/HealthConnectWriter.kt::HC_MAX_BPM",
+      "identity_sha256": "d993751514e926cefb60d31fefa82488abf800c8b9ca3e635ea455bd56fba6d0",
+      "platform": "kotlin",
+      "rationale": "Bounds of the Health Connect HeartRateRecord sample range; Health Connect rejects a whole insert containing an out-of-range sample, so the Android exporter drops those first. Apple Health has no equivalent per-record bound in this path."
+    },
+    {
+      "type": "platform_specific",
+      "kind": "add-unpaired-constant",
+      "identity": "kotlin\u0000android/app/src/main/java/com/noop/ingest/HealthConnectWriter.kt::HR_RECORDS_PER_INSERT",
+      "identity_sha256": "bafe6a029a5d4b8bdecf072e0f47b772e96e40210b4342bd4ce8e34c73fbfe0d",
+      "platform": "kotlin",
+      "rationale": "Batch size for Health Connect insertRecords so a large heart-rate backlog cannot exceed the Health Connect request limit and wedge the export. The iOS HealthKit write-back has a different API and batching model."
     }
   ]
 }
