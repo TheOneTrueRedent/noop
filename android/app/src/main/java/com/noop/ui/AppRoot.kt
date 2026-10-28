@@ -627,6 +627,24 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
             ) {
                 // --- Live, working screens (existing waves) ---
                 composable(Destination.Today.route) {
+                    // Fork: the Slate layout's Home replaces Today while the Slate switch is on.
+                    if (SlateLook.enabled) {
+                        SlateHomeScreen(
+                            vm = viewModel,
+                            onOpenSettings = { nav.navigateTopLevel(Destination.Settings.route) },
+                            onOpenSleep = { nav.navigateTopLevel(Destination.Sleep.route) },
+                            onOpenMetric = { key -> nav.navigate("vital_detail/$key") },
+                            onOpenStress = { nav.navigate(Destination.Stress.route) },
+                            onOpenHealth = { nav.navigateTopLevel(Destination.Health.route) },
+                            onOpenLive = { nav.navigate(Destination.Live.route) },
+                            onOpenWorkouts = { nav.navigate(Destination.Workouts.route) },
+                            onOpenJournal = { nav.navigateTopLevel(Destination.Insights.route) },
+                            onOpenInsights = { nav.navigate(Destination.InsightsHub.route) },
+                            onOpenCoach = { nav.navigateTopLevel(Destination.Coach.route) },
+                            onOpenTrends = { nav.navigateTopLevel(Destination.Trends.route) },
+                        )
+                        return@composable
+                    }
                     TodayScreen(
                         viewModel = viewModel,
                         // The quick-action "+" lives in the Today header's top-right now (off the
@@ -1144,6 +1162,11 @@ private fun GlassBottomBar(
     // One binding, used by BOTH the slots and the More-lit predicate below. #2218's note applies here
     // twice over: a second copy of "which tabs exist" is what let Coach light two slots at once, and a
     // conditional tab makes that failure available again to anyone who filters in one place only.
+    // Fork: the Slate layout draws its own bar (Home · Health · Trends · More + Coach button).
+    if (SlateLook.enabled) {
+        SlateTabBar(current = current, onTabSelected = onTabSelected, modifier = modifier)
+        return
+    }
     val visibleTrailing = barTrailingTabsFor(BottomBarStyleStore.coachEnabled)
     val barShape = RoundedCornerShape(50)
     Box(
