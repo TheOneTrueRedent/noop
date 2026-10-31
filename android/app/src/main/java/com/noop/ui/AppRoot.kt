@@ -627,6 +627,27 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
             ) {
                 // --- Live, working screens (existing waves) ---
                 composable(Destination.Today.route) {
+                    // Fork: the Slate layout's Home replaces Today while the Slate switch is on.
+                    if (SlateLook.enabled) {
+                        SlateHomeScreen(
+                            vm = viewModel,
+                            onOpenSettings = { nav.navigateTopLevel(Destination.Settings.route) },
+                            onOpenSleep = { nav.navigateTopLevel(Destination.Sleep.route) },
+                            onOpenMetric = { key -> nav.navigate("vital_detail/$key") },
+                            onOpenStress = { nav.navigate(Destination.Stress.route) },
+                            onOpenHealth = { nav.navigateTopLevel(Destination.Health.route) },
+                            onOpenLive = { nav.navigate(Destination.Live.route) },
+                            onOpenWorkouts = { nav.navigate(Destination.Workouts.route) },
+                            onOpenJournal = { nav.navigateTopLevel(Destination.Insights.route) },
+                            onOpenInsights = { nav.navigate(Destination.InsightsHub.route) },
+                            onOpenCoach = { nav.navigateTopLevel(Destination.Coach.route) },
+                            onOpenTrends = { nav.navigateTopLevel(Destination.Trends.route) },
+                            onOpenDetail = { kind, day -> nav.navigate(slateDetailRoute(kind, day)) },
+                            onOpenHealthMonitor = { nav.navigate(SLATE_HEALTH_MONITOR_ROUTE) },
+                            onOpenDevices = { nav.navigateTopLevel(Destination.Devices.route) },
+                        )
+                        return@composable
+                    }
                     TodayScreen(
                         viewModel = viewModel,
                         // The quick-action "+" lives in the Today header's top-right now (off the
@@ -670,6 +691,40 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
                         // #627: the journal-reminder card opens the journal (hosted in Insights), same
                         // destination the Sleep screen's morning sheet uses.
                         onOpenJournal = { nav.navigateTopLevel(Destination.Insights.route) },
+                    )
+                }
+                // Fork: Slate layout detail screens (score detail per dial, Health monitor).
+                composable(SLATE_DETAIL_ROUTE) { entry ->
+                    val kind = entry.arguments?.getString("kind") ?: "rest"
+                    val day = entry.arguments?.getString("day") ?: logicalDayKeyNow()
+                    SlateScoreDetailScreen(
+                        vm = viewModel,
+                        kind = kind,
+                        day = day,
+                        onBack = { nav.popBackStack() },
+                        onMore = {
+                            when (kind) {
+                                "charge" -> nav.navigate("vital_detail/recovery")
+                                "effort" -> nav.navigate("vital_detail/$HERO_EFFORT_METRIC_KEY")
+                                else -> nav.navigateTopLevel(Destination.Sleep.route)
+                            }
+                        },
+                    )
+                }
+                composable(SLATE_FULL_HEALTH_ROUTE) {
+                    HealthScreen(
+                        vm = viewModel,
+                        onVitalClick = { nav.navigate("vital_detail/$it") },
+                        onOpenLabBook = { nav.navigateTopLevel(Destination.LabBook.route) },
+                        onOpenFusedRecord = { nav.navigateTopLevel(Destination.FusedRecord.route) },
+                        onOpenSettings = { nav.navigateTopLevel(Destination.Settings.route) },
+                    )
+                }
+                composable(SLATE_HEALTH_MONITOR_ROUTE) {
+                    SlateHealthMonitorScreen(
+                        vm = viewModel,
+                        onBack = { nav.popBackStack() },
+                        onOpenVital = { key -> nav.navigate("vital_detail/$key") },
                     )
                 }
                 composable(Destination.Live.route) {
@@ -728,6 +783,17 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
                 composable(Destination.Insights.route) { InsightsScreen(viewModel, onOpenInsightsHub = { nav.navigateTopLevel(Destination.InsightsHub.route) }) }
                 composable(Destination.Compare.route) { CompareScreen(viewModel) }
                 composable(Destination.Health.route) {
+                    // Fork: the Slate layout's Health tab (Fitness Age orb + factors) while the switch is on.
+                    if (SlateLook.enabled) {
+                        SlateHealthScreen(
+                            vm = viewModel,
+                            onOpenHealthMonitor = { nav.navigate(SLATE_HEALTH_MONITOR_ROUTE) },
+                            onOpenStress = { nav.navigate(Destination.Stress.route) },
+                            onOpenFullHealth = { nav.navigate(SLATE_FULL_HEALTH_ROUTE) },
+                            onOpenSettings = { nav.navigateTopLevel(Destination.Settings.route) },
+                        )
+                        return@composable
+                    }
                     HealthScreen(
                         vm = viewModel,
                         onVitalClick = { nav.navigate("vital_detail/$it") },
@@ -1144,6 +1210,11 @@ private fun GlassBottomBar(
     // One binding, used by BOTH the slots and the More-lit predicate below. #2218's note applies here
     // twice over: a second copy of "which tabs exist" is what let Coach light two slots at once, and a
     // conditional tab makes that failure available again to anyone who filters in one place only.
+    // Fork: the Slate layout draws its own bar (Home · Health · Trends · More + Coach button).
+    if (SlateLook.enabled) {
+        SlateTabBar(current = current, onTabSelected = onTabSelected, modifier = modifier)
+        return
+    }
     val visibleTrailing = barTrailingTabsFor(BottomBarStyleStore.coachEnabled)
     val barShape = RoundedCornerShape(50)
     Box(
