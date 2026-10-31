@@ -59,32 +59,89 @@ class SlateHomeLogicTest {
     }
 
     @Test
-    fun contributorTiersBothDirections() {
-        assertEquals(SlateTier.OPTIMAL, slateBand(90.0, 70.0, 85.0))
-        assertEquals(SlateTier.SUFFICIENT, slateBand(70.0, 70.0, 85.0))
-        assertEquals(SlateTier.INSUFFICIENT, slateBand(69.9, 70.0, 85.0))
-        assertNull(slateBand(null, 70.0, 85.0))
-        // Disturbances: fewer is better.
-        assertEquals(SlateTier.OPTIMAL, slateBand(5.0, 10.0, 5.0, higherIsBetter = false))
-        assertEquals(SlateTier.SUFFICIENT, slateBand(8.0, 10.0, 5.0, higherIsBetter = false))
-        assertEquals(SlateTier.INSUFFICIENT, slateBand(11.0, 10.0, 5.0, higherIsBetter = false))
-    }
-
-    @Test
-    fun vsBaselineUsesDirection() {
-        assertEquals(SlateTier.OPTIMAL, slateVsBaseline(55.0, 50.0, higherIsBetter = true))
-        assertEquals(SlateTier.INSUFFICIENT, slateVsBaseline(40.0, 50.0, higherIsBetter = true))
-        assertEquals(SlateTier.OPTIMAL, slateVsBaseline(55.0, 58.0, higherIsBetter = false))
-        assertEquals(SlateTier.INSUFFICIENT, slateVsBaseline(70.0, 58.0, higherIsBetter = false))
-        assertNull(slateVsBaseline(50.0, null, true))
-    }
-
-    @Test
     fun restorativeAndPercentHelpers() {
         val d = com.noop.data.DailyMetric(deviceId = "x", day = "2026-10-27", totalSleepMin = 400.0, deepMin = 80.0, remMin = 80.0)
         assertEquals(40.0, slateRestorativePct(d)!!, 1e-9)
         assertNull(slateRestorativePct(d.copy(remMin = null)))
         assertEquals(88.0, slatePercent(0.88)!!, 1e-9)
         assertEquals(88.0, slatePercent(88.0)!!, 1e-9)
+    }
+
+    private fun d(day: String, rhr: Int? = null, strain: Double? = null, sleep: Double? = null) =
+        com.noop.data.DailyMetric(deviceId = "x", day = day, restingHr = rhr, strain = strain, totalSleepMin = sleep)
+
+    @Test
+    fun windowStatsIncludeTheSelectedDayAndSkipGaps() {
+        val rows = listOf(
+            d("2026-09-27", sleep = 999.0),          // 31 days before: outside a 30-day window
+            d("2026-09-28", sleep = 400.0),
+            d("2026-10-10", sleep = null),
+            d("2026-10-27", sleep = 500.0),          // the selected day itself counts
+            d("2026-10-28", sleep = 999.0),          // after the selected day: excluded
+        )
+        val st = slateWindowStats(rows, "2026-10-27") { it.totalSleepMin }
+        assertEquals(2, st.count)
+        assertEquals(450.0, st.mean!!, 1e-9)
+        assertEquals(SlateWindowStats(null, 0), slateWindowStats(rows, "not-a-day") { it.totalSleepMin })
+    }
+
+    @Test
+    fun signedDifferencesUseATrueMinusAndNoSignOnZero() {
+        assertEquals("+14", slateSigned(14.2, 0))
+        assertEquals("\u22126", slateSigned(-6.0, 0))
+        assertEquals("0", slateSigned(0.3, 0))
+        assertEquals("\u22120.2", slateSigned(-0.2, 1).replace(',', '.'))
+    }
+
+    @Test
+    fun activityTileDurationIsHoursColonMinutes() {
+        assertEquals("9:05", slateClockDuration(545.0))
+        assertEquals("0:42", slateClockDuration(42.0))
+        assertNull(slateClockDuration(0.0))
+        assertNull(slateClockDuration(null))
+    }
+
+    @Test
+    fun factorPositionRunsWorseToBetterInEitherDirection() {
+        assertEquals(0.5f, slateFactorPosition(420.0, 300.0, 540.0)!!, 1e-6f)
+        assertEquals(1f, slateFactorPosition(40.0, 80.0, 45.0)!!, 1e-6f)      // lower RHR is better
+        assertEquals(0f, slateFactorPosition(90.0, 80.0, 45.0)!!, 1e-6f)
+        assertNull(slateFactorPosition(null, 0.0, 1.0))
+        assertNull(slateFactorPosition(1.0, 2.0, 2.0))
+    }
+
+    @Test
+    fun fitnessTermsAreTheTwoTermsOfTheNesFormula() {
+        // Male, RHR median 76, five active days at mean Effort 60 -> PA index 5.0 x 2.0 = 10.
+        val gate = (21..27).map { day ->
+            d("2026-10-$day", rhr = if (day == 21) null else listOf(70, 76, 80, 76, 74, 78)[day - 22],
+                strain = if (day <= 25) 60.0 else 10.0)
+        }
+        val t = slateFitnessTerms(gate, 38.0, "male")!!
+        assertEquals(0.155 * (76.0 - 65.0) / 0.296, t.restingHrYears, 1e-9)
+        assertEquals(-0.226 * (10.0 - 5.0) / 0.296, t.activityYears, 1e-9)
+        assertNull(slateFitnessTerms(gate.take(3), 38.0, "male"))          // too few RHR nights
+        assertNull(slateFitnessTerms(gate, 38.0, ""))                       // sex not set
+    }
+
+    @Test
+    fun paceOfAgingIsTheSlopeOnceHalfAYearExists() {
+        val start = java.time.LocalDate.parse("2026-01-03")
+        // Fitness Age rising half a year per calendar year.
+        val pts = (0 until 26).map { w ->
+            val day = start.plusWeeks(w.toLong())
+            day.toString() to 30.0 + 0.5 * java.time.temporal.ChronoUnit.DAYS.between(start, day) / 365.25
+        }
+        assertEquals(0.5, slatePaceOfAging(pts)!!, 1e-9)
+        assertNull(slatePaceOfAging(pts.take(19)))                          // too few weeks
+        val steep = pts.map { (k, v) -> k to v * 20.0 }
+        assertEquals(3.0, slatePaceOfAging(steep)!!, 1e-9)                  // clamped
+    }
+
+    @Test
+    fun activeDaysPerWeekCountsEffortAtTheFitnessAgeCut() {
+        val rows = (1..14).map { day -> d("2026-10-%02d".format(day), strain = if (day % 2 == 0) 45.0 else 12.0) }
+        assertEquals(3.5, slateActiveDaysPerWeek(rows, "2026-10-14", 14)!!, 1e-9)
+        assertNull(slateActiveDaysPerWeek(emptyList(), "2026-10-14", 30))
     }
 }

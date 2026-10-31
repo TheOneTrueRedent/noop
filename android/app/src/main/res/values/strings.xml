@@ -2941,4 +2941,80 @@
     <string name="slate_heart_rate">Heart rate</string>
     <string name="slate_calibrating_range">Calibrating range</string>
     <string name="slate_bpm">BPM</string>
+    <!-- Fork: Slate layout v2 (reference screenshots) -->
+    <string name="slate_add_activity">Add activity</string>
+    <string name="slate_start_activity">Start activity</string>
+    <string name="slate_daily_outlook">Daily Outlook</string>
+    <string name="slate_daily_features">Daily features</string>
+    <string name="slate_open">Open</string>
+    <string name="slate_close">Close</string>
+    <string name="slate_activities">Activities</string>
+    <string name="slate_vitals_update">Vitals update</string>
+    <string name="slate_vitals_none">No vital readings yet. Wear your strap overnight to start your Health monitor.</string>
+    <string name="slate_vitals_calibrating">Your personal ranges are still being learned, so readings are compared with reference ranges for now.</string>
+    <string name="slate_vitals_all_in">All your vital metrics are within your typical baseline.</string>
+    <string name="slate_view_health_monitor">View health monitor</string>
+    <string name="slate_unit_pp">pp</string>
+    <string name="slate_unit_breaths">breaths/min</string>
+    <string name="slate_unit_min">min</string>
+    <string name="slate_sleep_score">Sleep score</string>
+    <string name="slate_hours_of_sleep">Hours of sleep</string>
+    <string name="slate_more_details">More details</string>
+    <string name="slate_vs_average">%1$s vs average</string>
+    <string name="slate_no_reading_day">No reading for this day</string>
+    <string name="slate_selected_vs_avg">Selected day vs 30-day average</string>
+    <string name="slate_selected_vs_avg_body">Includes the selected day. Missing readings are excluded; each row shows its recorded-day count.</string>
+    <string name="slate_today_record">Today\'s record · %1$s</string>
+    <string name="slate_historical_record">Historical daily record · %1$s</string>
+    <string name="slate_zone_n">Zone %1$d</string>
+    <string name="slate_monitor_footer">Compare your latest readings with your usual patterns. Tap a metric for its full history.</string>
+    <string name="slate_blood_oxygen">Blood oxygen (SpO₂)</string>
+    <string name="slate_rhr_short">RHR</string>
+    <string name="slate_skin_temp">Skin temp</string>
+    <string name="slate_no_reading">No reading</string>
+    <string name="slate_off_baseline">Off your baseline</string>
+    <string name="slate_outside_reference">Outside reference range</string>
+    <string name="slate_in_your_range">In your range</string>
+    <string name="slate_in_reference_range">In reference range</string>
+    <string name="slate_fitness_age">Fitness age</string>
+    <string name="slate_updated_on">Updated %1$s</string>
+    <string name="slate_fa_add_profile">Add your age and sex in Settings</string>
+    <string name="slate_fa_same">Same as your age</string>
+    <string name="slate_fa_older">%1$s years older</string>
+    <string name="slate_fa_younger">%1$s years younger</string>
+    <string name="slate_pace_of_aging">Pace of aging</string>
+    <string name="slate_pace_value">%1$s×</string>
+    <string name="slate_unavailable">Unavailable</string>
+    <string name="slate_per_week">%1$s / week</string>
+    <string name="slate_active_days">Active days</string>
+    <string name="slate_fitness">Fitness</string>
+    <string name="slate_vo2max">VO₂ max</string>
+    <string name="slate_6m_avg">6 month avg.</string>
+    <string name="slate_30d_avg">30 day avg.</string>
+    <string name="slate_years">years</string>
+    <string name="slate_years_signed">%1$s years</string>
+    <string name="slate_age_impact">Age impact</string>
+    <string name="slate_age_impact_note">Age impact uses the same last seven days as your Fitness Age. Factors the formula does not use show no impact.</string>
+    <string name="slate_monitors">Monitors</string>
+    <string name="slate_all_health_data">All health data</string>
+    <plurals name="slate_streak_days">
+        <item quantity="one">%1$d-day streak</item>
+        <item quantity="other">%1$d-day streak</item>
+    </plurals>
+    <plurals name="slate_vitals_outside">
+        <item quantity="one">%1$d vital metric is outside your typical baseline. Check your detailed history.</item>
+        <item quantity="other">%1$d vital metrics are outside your typical baseline. Check your detailed history.</item>
+    </plurals>
+    <plurals name="slate_avg_readings">
+        <item quantity="one">30d avg %1$s · %2$d reading</item>
+        <item quantity="other">30d avg %1$s · %2$d readings</item>
+    </plurals>
+    <plurals name="slate_fa_nights_needed">
+        <item quantity="one">%1$d more night of wear needed</item>
+        <item quantity="other">%1$d more nights of wear needed</item>
+    </plurals>
+    <plurals name="slate_recorded_days">
+        <item quantity="one">%1$d recorded day</item>
+        <item quantity="other">%1$d recorded days</item>
+    </plurals>
 </resources>

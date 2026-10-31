@@ -642,8 +642,9 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
                             onOpenInsights = { nav.navigate(Destination.InsightsHub.route) },
                             onOpenCoach = { nav.navigateTopLevel(Destination.Coach.route) },
                             onOpenTrends = { nav.navigateTopLevel(Destination.Trends.route) },
-                            onOpenDetail = { kind -> nav.navigate(slateDetailRoute(kind)) },
+                            onOpenDetail = { kind, day -> nav.navigate(slateDetailRoute(kind, day)) },
                             onOpenHealthMonitor = { nav.navigate(SLATE_HEALTH_MONITOR_ROUTE) },
+                            onOpenDevices = { nav.navigateTopLevel(Destination.Devices.route) },
                         )
                         return@composable
                     }
@@ -695,9 +696,11 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
                 // Fork: Slate layout detail screens (score detail per dial, Health monitor).
                 composable(SLATE_DETAIL_ROUTE) { entry ->
                     val kind = entry.arguments?.getString("kind") ?: "rest"
+                    val day = entry.arguments?.getString("day") ?: logicalDayKeyNow()
                     SlateScoreDetailScreen(
                         vm = viewModel,
                         kind = kind,
+                        day = day,
                         onBack = { nav.popBackStack() },
                         onMore = {
                             when (kind) {
@@ -706,6 +709,15 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
                                 else -> nav.navigateTopLevel(Destination.Sleep.route)
                             }
                         },
+                    )
+                }
+                composable(SLATE_FULL_HEALTH_ROUTE) {
+                    HealthScreen(
+                        vm = viewModel,
+                        onVitalClick = { nav.navigate("vital_detail/$it") },
+                        onOpenLabBook = { nav.navigateTopLevel(Destination.LabBook.route) },
+                        onOpenFusedRecord = { nav.navigateTopLevel(Destination.FusedRecord.route) },
+                        onOpenSettings = { nav.navigateTopLevel(Destination.Settings.route) },
                     )
                 }
                 composable(SLATE_HEALTH_MONITOR_ROUTE) {
@@ -771,6 +783,17 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
                 composable(Destination.Insights.route) { InsightsScreen(viewModel, onOpenInsightsHub = { nav.navigateTopLevel(Destination.InsightsHub.route) }) }
                 composable(Destination.Compare.route) { CompareScreen(viewModel) }
                 composable(Destination.Health.route) {
+                    // Fork: the Slate layout's Health tab (Fitness Age orb + factors) while the switch is on.
+                    if (SlateLook.enabled) {
+                        SlateHealthScreen(
+                            vm = viewModel,
+                            onOpenHealthMonitor = { nav.navigate(SLATE_HEALTH_MONITOR_ROUTE) },
+                            onOpenStress = { nav.navigate(Destination.Stress.route) },
+                            onOpenFullHealth = { nav.navigate(SLATE_FULL_HEALTH_ROUTE) },
+                            onOpenSettings = { nav.navigateTopLevel(Destination.Settings.route) },
+                        )
+                        return@composable
+                    }
                     HealthScreen(
                         vm = viewModel,
                         onVitalClick = { nav.navigate("vital_detail/$it") },

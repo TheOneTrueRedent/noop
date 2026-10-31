@@ -17,22 +17,23 @@ import org.json.JSONObject
 // exactly, so it is fully switchable. Data colour worlds (recovery / strain / sleep / zones) are the
 // DarkTokens ones untouched — only the surfaces and chrome text move.
 
-/** DarkTokens with blue-slate surfaces. Only surface / hairline / text / hero tokens differ. */
+/** DarkTokens with the Slate reference surfaces (neutral charcoal cards on a near-black canvas, sampled
+ *  from the fork owner's screenshots). Only surface / hairline / text / hero tokens differ. */
 val SlateTokens: PaletteTokens = DarkTokens.copy(
-    surfaceBase = Color(0xFF18232B),
-    surfaceRaised = Color(0xFF24313A),
-    surfaceOverlay = Color(0xFF1E2A33),
-    surfaceInset = Color(0xFF1B262E),
-    hairline = Color(0xFF2C3A44),
-    hairlineStrong = Color(0xFF3A4955),
-    textPrimary = Color(0xFFF2F5F7),
-    textSecondary = Color(0xFFB4BFC7),
-    textTertiary = Color(0xFF7F8D98),
-    scenicCenter = Color(0xFF1E2A33),
-    scenicEdge = Color(0xFF18232B),
-    cardFillTop = Color(0xFF26333C),
-    cardFillBottom = Color(0xFF212D35),
-    heroFill = Color(0xFF1F2B34),
+    surfaceBase = Color(0xFF141A1F),
+    surfaceRaised = Color(0xFF2D3337),
+    surfaceOverlay = Color(0xFF252F36),
+    surfaceInset = Color(0xFF393F43),
+    hairline = Color(0xFF353C41),
+    hairlineStrong = Color(0xFF41474B),
+    textPrimary = Color(0xFFFFFFFF),
+    textSecondary = Color(0xFFB0B5BA),
+    textTertiary = Color(0xFF7E868C),
+    scenicCenter = Color(0xFF1E262B),
+    scenicEdge = Color(0xFF141A1F),
+    cardFillTop = Color(0xFF2F3539),
+    cardFillBottom = Color(0xFF2A3034),
+    heroFill = Color(0xFF1E262B),
     heroBorder = Color(0x14FFFFFF),
 )
 

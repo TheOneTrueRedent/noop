@@ -13,22 +13,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MonitorHeart
+import androidx.compose.material.icons.automirrored.outlined.Chat
+import androidx.compose.material.icons.automirrored.outlined.TrendingUp
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.MonitorHeart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,8 +37,9 @@ import com.noop.R
 
 // MARK: - Slate tab bar (fork-only)
 //
-// The Slate layout's bottom bar: a rounded pill of four tabs — Home · Health · Trends · More — with the
-// Coach as a separate round button beside it (shown only while Coach is on). Same routes as the shipped
+// The Slate layout's bottom bar, drawn to the reference: a tall rounded pill of four outlined tabs — Home ·
+// Health · Trends · More (the reference's fourth tab is a cloud Community, which NOOP has no counterpart
+// for) — with the Coach as a separate rounded button with a gradient rim (shown only while Coach is on). Same routes as the shipped
 // bar; only the set and the drawing differ. "More" stays lit for any screen reached through More.
 
 /** The four pill tabs, in order. A function so a JVM test can pin the set. */
@@ -52,24 +53,28 @@ internal fun SlateTabBar(
     modifier: Modifier = Modifier,
 ) {
     val tabs = slateTabs()
-    val pill = RoundedCornerShape(28.dp)
+    val pill = RoundedCornerShape(34.dp)
     Row(
         modifier
             .fillMaxWidth()
             .navigationBarsPadding()
             .padding(horizontal = 12.dp)
-            .padding(top = 4.dp, bottom = Metrics.space10),
+            .padding(top = 4.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Row(
             Modifier
                 .weight(1f)
-                .widthIn(max = 420.dp)
+                .widthIn(max = 460.dp)
+                .height(76.dp)
                 .clip(pill)
-                .background(Palette.surfaceRaised.copy(alpha = 0.97f), pill)
-                .border(0.5.dp, Palette.hairline, pill)
-                .padding(horizontal = 6.dp, vertical = 6.dp),
+                .background(
+                    Brush.verticalGradient(listOf(SlateUi.tabBar.copy(alpha = 0.98f), SlateUi.bgMid.copy(alpha = 0.98f))),
+                    pill,
+                )
+                .border(1.dp, SlateUi.raised.copy(alpha = 0.6f), pill)
+                .padding(horizontal = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             tabs.forEach { dest ->
@@ -79,10 +84,10 @@ internal fun SlateTabBar(
                 }
                 SlateTab(
                     icon = when (dest) {
-                        Destination.Today -> Icons.Filled.Home
-                        Destination.Health -> Icons.Filled.MonitorHeart
-                        Destination.Trends -> Icons.AutoMirrored.Filled.TrendingUp
-                        else -> Icons.Filled.Menu
+                        Destination.Today -> Icons.Outlined.Home
+                        Destination.Health -> Icons.Outlined.MonitorHeart
+                        Destination.Trends -> Icons.AutoMirrored.Outlined.TrendingUp
+                        else -> Icons.Outlined.Menu
                     },
                     label = uiString(when (dest) {
                         Destination.Today -> R.string.slate_tab_home
@@ -98,17 +103,27 @@ internal fun SlateTabBar(
         }
         if (BottomBarStyleStore.coachEnabled) {
             val coachActive = current == Destination.Coach
+            val shape = RoundedCornerShape(30.dp)
             Box(
                 Modifier
-                    .size(60.dp)
-                    .clip(CircleShape)
-                    .background(Palette.surfaceRaised.copy(alpha = 0.97f))
-                    .border(1.5.dp, if (coachActive) Palette.accent else Palette.accent.copy(alpha = 0.55f), CircleShape)
+                    .size(76.dp)
+                    .clip(shape)
+                    .background(Brush.radialGradient(listOf(SlateUi.coachCore, SlateUi.bgMid)), shape)
+                    .border(
+                        if (coachActive) 2.dp else 1.5.dp,
+                        Brush.linearGradient(listOf(SlateUi.coachRimA, SlateUi.coachRimB)),
+                        shape,
+                    )
                     .clickable { onTabSelected(Destination.Coach) },
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(Icons.Filled.AutoAwesome, contentDescription = uiString(R.string.nav_coach), tint = Palette.textPrimary,
-                    modifier = Modifier.size(24.dp))
+                Box(
+                    Modifier.size(44.dp).border(2.dp, SlateUi.coachRimB, CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(Icons.AutoMirrored.Outlined.Chat, contentDescription = uiString(R.string.nav_coach),
+                        tint = SlateUi.textPrimary, modifier = Modifier.size(22.dp))
+                }
             }
         }
     }
@@ -117,17 +132,16 @@ internal fun SlateTabBar(
 @Composable
 private fun SlateTab(icon: ImageVector, label: String, active: Boolean, modifier: Modifier, onClick: () -> Unit) {
     Column(
-        modifier.clip(RoundedCornerShape(20.dp)).clickable(onClick = onClick).padding(vertical = 4.dp),
+        modifier.clip(RoundedCornerShape(24.dp)).clickable(onClick = onClick).padding(vertical = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Icon(icon, contentDescription = null, tint = if (active) Palette.textPrimary else Palette.textTertiary,
-            modifier = Modifier.size(22.dp))
-        Spacer(Modifier.height(2.dp))
+        Icon(icon, contentDescription = null, tint = if (active) SlateUi.textPrimary else SlateUi.tabInactive,
+            modifier = Modifier.size(28.dp))
+        Spacer(Modifier.height(4.dp))
         Text(
             label,
-            fontSize = 10.sp,
-            fontWeight = if (active) FontWeight.SemiBold else FontWeight.Normal,
-            color = if (active) Palette.textPrimary else Palette.textTertiary,
+            style = SlateType.tab.copy(fontWeight = if (active) FontWeight.Bold else FontWeight.SemiBold, fontSize = 14.sp),
+            color = if (active) SlateUi.textPrimary else SlateUi.tabInactive,
             maxLines = 1,
         )
     }

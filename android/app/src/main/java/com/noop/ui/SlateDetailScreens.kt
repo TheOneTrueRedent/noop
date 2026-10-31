@@ -1,5 +1,6 @@
 package com.noop.ui
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,33 +8,29 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Air
-import androidx.compose.material.icons.filled.Bedtime
+import androidx.compose.material.icons.automirrored.outlined.DirectionsRun
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.GraphicEq
-import androidx.compose.material.icons.filled.HourglassEmpty
-import androidx.compose.material.icons.filled.LocalFireDepartment
-import androidx.compose.material.icons.filled.MonitorHeart
-import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material.icons.filled.Thermostat
-import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.outlined.Bedtime
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.FitnessCenter
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.LocalFireDepartment
+import androidx.compose.material.icons.outlined.MonitorHeart
+import androidx.compose.material.icons.outlined.Schedule
+import androidx.compose.material.icons.outlined.Thermostat
+import androidx.compose.material.icons.outlined.Timeline
+import androidx.compose.material.icons.outlined.WaterDrop
+import androidx.compose.material.icons.outlined.Waves
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,11 +42,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -60,45 +66,48 @@ import com.noop.analytics.VitalBands
 import com.noop.data.DailyMetric
 import java.time.LocalDate
 import java.util.Locale
+import kotlin.math.abs
 import kotlin.math.roundToInt
+import kotlinx.coroutines.delay
 
 // MARK: - Slate detail screens (fork-only)
 //
-// Step 2 of the Slate layout: the score detail screen reached from each Home dial (one big dial, a list
-// of contributor rows each coloured Insufficient / Sufficient / Optimal, a legend, and a "more about"
-// card that opens NOOP's own full screen), and the Health monitor (live heart rate over today's curve,
-// then resp / resting HR / HRV / SpO2 / skin-temp tiles with their range captions).
+// The score detail screen reached from each Home dial, laid out to the reference "Recovery" screenshot:
+// the selected day's date, one big ring with the wordmark, then a card of contributor rows, each showing
+// the day's value, its 30-day average and recorded-day count, and the difference from that average. And the
+// Health monitor, laid out to its reference: a full-width live heart-rate panel on a grid (big BPM, HR zone,
+// recent curve), then resp / SpO2 / RHR / HRV / skin-temp tiles with a range chip each.
 //
-// Every number is NOOP's own (the same DailyMetric row, RestScorer, StrainScorer, latestVitals and
-// VitalBands the stock screens read). The ONLY new judgement is the three-step contributor colouring,
-// which is display-only, never fed back into a score, and pinned by [slateBand] + its JVM test.
+// Every number is NOOP's own (the same DailyMetric row, RestScorer, StrainScorer, latestVitals and VitalBands
+// the stock screens read). The only arithmetic added here is the 30-day mean / count / difference, which is
+// display-only and pinned by [slateWindowStats] and its JVM test.
 
-internal const val SLATE_DETAIL_ROUTE = "slate_detail/{kind}"
+internal const val SLATE_DETAIL_ROUTE = "slate_detail/{kind}/{day}"
 internal const val SLATE_HEALTH_MONITOR_ROUTE = "slate_health_monitor"
-internal fun slateDetailRoute(kind: String) = "slate_detail/$kind"
+internal const val SLATE_FULL_HEALTH_ROUTE = "slate_full_health"
+internal fun slateDetailRoute(kind: String, day: String) = "slate_detail/$kind/$day"
 
-/** The three display tiers of a contributor row. */
-internal enum class SlateTier { INSUFFICIENT, SUFFICIENT, OPTIMAL }
+/** Mean and recorded-day count over the [span] days ending on (and including) [day]. */
+internal data class SlateWindowStats(val mean: Double?, val count: Int)
 
-/**
- * Display tier for a contributor value. [higherIsBetter] picks the direction; [sufficient] and
- * [optimal] are the inclusive lower edges (or upper edges when lower is better). null value -> null.
- */
-internal fun slateBand(value: Double?, sufficient: Double, optimal: Double, higherIsBetter: Boolean = true): SlateTier? {
-    val v = value ?: return null
-    return if (higherIsBetter) {
-        when {
-            v >= optimal -> SlateTier.OPTIMAL
-            v >= sufficient -> SlateTier.SUFFICIENT
-            else -> SlateTier.INSUFFICIENT
-        }
-    } else {
-        when {
-            v <= optimal -> SlateTier.OPTIMAL
-            v <= sufficient -> SlateTier.SUFFICIENT
-            else -> SlateTier.INSUFFICIENT
-        }
-    }
+internal fun slateWindowStats(
+    rows: List<DailyMetric>,
+    day: String,
+    span: Int = 30,
+    select: (DailyMetric) -> Double?,
+): SlateWindowStats {
+    val end = runCatching { LocalDate.parse(day) }.getOrNull() ?: return SlateWindowStats(null, 0)
+    val start = end.minusDays((span - 1).toLong()).toString()
+    val values = rows.asSequence().filter { it.day in start..day }.mapNotNull(select).toList()
+    return SlateWindowStats(values.takeIf { it.isNotEmpty() }?.average(), values.size)
+}
+
+/** Signed difference with a true minus sign: "+14", "−6", "+0.4". */
+internal fun slateSigned(diff: Double, decimals: Int): String {
+    val mag = if (decimals == 0) abs(diff).roundToInt().toString()
+    else String.format(Locale.getDefault(), "%.${decimals}f", abs(diff))
+    val zero = mag.all { it == '0' || it == '.' || it == ',' }
+    return if (zero) mag else (if (diff > 0) "+" else "−") + mag
 }
 
 /** Deep + REM as a share of total sleep, 0..100. */
@@ -112,29 +121,24 @@ internal fun slateRestorativePct(d: DailyMetric?): Double? {
 /** Efficiency stored as 0..1 or 0..100; always returns 0..100. */
 internal fun slatePercent(v: Double?): Double? = v?.let { if (it <= 1.5) it * 100.0 else it }
 
-/** Today's value against the trailing-30-day mean, as a tier (for Charge's vitals, where "normal" is personal). */
-internal fun slateVsBaseline(value: Double?, mean: Double?, higherIsBetter: Boolean): SlateTier? {
-    if (value == null || mean == null || mean == 0.0) return null
-    val ratio = value / mean
-    return if (higherIsBetter) slateBand(ratio, 0.90, 1.0) else slateBand(ratio, 1.10, 1.0, higherIsBetter = false)
-}
-
-@Composable
-private fun SlateTier?.tint(): Color = when (this) {
-    SlateTier.OPTIMAL -> Palette.statusPositive
-    SlateTier.SUFFICIENT -> Palette.textSecondary
-    SlateTier.INSUFFICIENT -> Palette.statusWarning
-    null -> Palette.textTertiary
-}
-
 private const val DASH = "–"
 
-private data class ContributorRow(val icon: ImageVector, val label: String, val value: String?, val tier: SlateTier?)
+/** One contributor row: how to read the value from a day, how to print it, and its unit words. */
+private class DetailRow(
+    val icon: ImageVector,
+    val label: String,
+    val unit: String,
+    val diffUnit: String,
+    val decimals: Int,
+    val select: (DailyMetric) -> Double?,
+    val format: (Double) -> String,
+)
 
 @Composable
 fun SlateScoreDetailScreen(
     vm: AppViewModel,
     kind: String,
+    day: String,
     onBack: () -> Unit,
     onMore: () -> Unit,
 ) {
@@ -144,189 +148,178 @@ fun SlateScoreDetailScreen(
     val effortScale = remember { UnitPrefs.effortScale(context) }
     val logicalKey = remember { logicalDayKeyNow() }
     val localKey = remember { LocalDate.now().toString() }
-    val row = remember(today, days) { resolveTodayRow(days, logicalKey, localKey) ?: today }
+    val todayRow = remember(today, days) { resolveTodayRow(days, logicalKey, localKey) ?: today }
+    val row = remember(days, todayRow, day) { days.lastOrNull { it.day == day } ?: todayRow?.takeIf { it.day == day } }
+    val isToday = day >= minOf(logicalKey, localKey)
     var importedPerf by remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
-    var importedNeed by remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
     LaunchedEffect(days) {
-        suspend fun load(key: String) = runCatching {
-            vm.repo.metricSeries("my-whoop", key, "0000-00-00", "9999-99-99")
+        importedPerf = runCatching {
+            vm.repo.metricSeries("my-whoop", "sleep_performance", "0000-00-00", "9999-99-99")
         }.getOrDefault(emptyList()).associate { it.day to it.value }
-        importedPerf = load("sleep_performance")
-        importedNeed = load("sleep_need_min")
     }
-    val window = remember(days, row) { days.filter { row == null || it.day < row.day }.takeLast(30) }
-    fun mean(sel: (DailyMetric) -> Double?) = window.mapNotNull(sel).takeIf { it.isNotEmpty() }?.average()
+    fun restOf(d: DailyMetric): Double? = importedPerf[d.day] ?: RestScorer.restFromDaily(d)
 
-    val title: String
+    val ms = "ms"
+    val bpm = "bpm"
+    val pp = uiString(R.string.slate_unit_pp)
     val heroLabel: String
-    val heroValue: String?
+    val heroValue: Double?
+    val heroPercent: Boolean
     val heroFraction: Double
     val heroColor: Color
-    val rows: List<ContributorRow>
-    val moreText: String
+    val rows: List<DetailRow>
     val emptyText: String?
     when (kind) {
         "charge" -> {
-            val charge = row?.recovery
-            title = uiString(R.string.trends_charge)
             heroLabel = uiString(R.string.trends_charge)
-            heroValue = charge?.let { "${it.roundToInt()}%" }
-            heroFraction = (charge ?: 0.0) / 100.0
-            heroColor = charge?.let { Palette.recoveryColor(it) } ?: DomainTheme.Charge.color
-            val rest = row?.let { importedPerf[it.day] ?: RestScorer.restFromDaily(it) }
+            heroValue = row?.recovery
+            heroPercent = true
+            heroFraction = (heroValue ?: 0.0) / 100.0
+            heroColor = heroValue?.let { Palette.recoveryColor(it) } ?: DomainTheme.Charge.color
             rows = listOf(
-                ContributorRow(Icons.Filled.MonitorHeart, uiString(R.string.slate_hrv_full),
-                    row?.avgHrv?.let { "${it.roundToInt()} ms" }, slateVsBaseline(row?.avgHrv, mean { it.avgHrv }, true)),
-                ContributorRow(Icons.Filled.FavoriteBorder, uiString(R.string.trends_resting_hr_full),
-                    row?.restingHr?.let { "$it bpm" },
-                    slateVsBaseline(row?.restingHr?.toDouble(), mean { it.restingHr?.toDouble() }, false)),
-                ContributorRow(Icons.Filled.Air, uiString(R.string.slate_respiratory_rate),
-                    row?.respRateBpm?.let { String.format(Locale.getDefault(), "%.1f", it) },
-                    slateVsBaseline(row?.respRateBpm, mean { it.respRateBpm }, false)),
-                ContributorRow(Icons.Filled.Bedtime, uiString(R.string.trends_rest),
-                    rest?.let { "${it.roundToInt()}%" }, slateBand(rest, 70.0, 85.0)),
+                DetailRow(Icons.Outlined.MonitorHeart, uiString(R.string.slate_hrv_full), ms, ms, 0,
+                    { it.avgHrv }, { it.roundToInt().toString() }),
+                DetailRow(Icons.Outlined.Timeline, uiString(R.string.trends_resting_hr_full), bpm, bpm, 0,
+                    { it.restingHr?.toDouble() }, { it.roundToInt().toString() }),
+                DetailRow(Icons.Outlined.Waves, uiString(R.string.slate_respiratory_rate),
+                    uiString(R.string.slate_unit_breaths), uiString(R.string.slate_unit_breaths), 1,
+                    { it.respRateBpm }, { String.format(Locale.getDefault(), "%.1f", it) }),
+                DetailRow(Icons.Outlined.Bedtime, uiString(R.string.slate_sleep_score), "", pp, 0,
+                    { restOf(it) }, { "${it.roundToInt()}%" }),
             )
-            moreText = uiString(R.string.slate_more_about_charge)
-            emptyText = if (charge == null) uiString(R.string.slate_waiting_body) else null
+            emptyText = if (heroValue == null) uiString(R.string.slate_waiting_body) else null
         }
         "effort" -> {
-            val effortRaw = row?.strain?.let { StrainScorer.effectiveEffort(live = null, stored = it) }
-            val effort = effortRaw?.let { UnitFormatter.effortValue(it, effortScale) }
+            val raw = row?.strain?.let { StrainScorer.effectiveEffort(live = null, stored = it) }
             val max = if (effortScale == EffortScale.WHOOP) 21.0 else 100.0
-            title = uiString(R.string.trends_effort)
             heroLabel = uiString(R.string.trends_effort)
-            heroValue = effort?.let { String.format(Locale.getDefault(), "%.1f", it) }
-            heroFraction = (effort ?: 0.0) / max
-            heroColor = DomainTheme.Effort.color
-            val meanEffort = mean { it.strain }
+            heroValue = raw?.let { UnitFormatter.effortValue(it, effortScale) }
+            heroPercent = false
+            heroFraction = (heroValue ?: 0.0) / max
+            heroColor = SlateUi.strainBlue
             rows = listOf(
-                ContributorRow(Icons.Filled.Timeline, uiString(R.string.trends_effort),
-                    effortRaw?.let { UnitFormatter.effortDisplay(it, effortScale) },
-                    slateVsBaseline(effortRaw, meanEffort, true)),
-                ContributorRow(Icons.Filled.LocalFireDepartment, uiString(R.string.l10n_today_screen_calories_3e62ecfe),
-                    row?.activeKcalEst?.let { "%,d".format(it.roundToInt()) },
-                    slateVsBaseline(row?.activeKcalEst, mean { it.activeKcalEst }, true)),
-                ContributorRow(Icons.Filled.Favorite, uiString(R.string.l10n_today_screen_steps_cdde4f20),
-                    row?.steps?.let { "%,d".format(it) },
-                    slateVsBaseline(row?.steps?.toDouble(), mean { it.steps?.toDouble() }, true)),
-                ContributorRow(Icons.Filled.Schedule, uiString(R.string.nav_workouts),
-                    row?.exerciseCount?.toString(), null),
+                DetailRow(Icons.Outlined.Timeline, uiString(R.string.trends_effort), "", "", 1,
+                    { d -> d.strain?.let { UnitFormatter.effortValue(it, effortScale) } },
+                    { String.format(Locale.getDefault(), "%.1f", it) }),
+                DetailRow(Icons.Outlined.LocalFireDepartment, uiString(R.string.l10n_today_screen_calories_3e62ecfe),
+                    "kcal", "kcal", 0, { it.activeKcalEst }, { "%,d".format(it.roundToInt()) }),
+                DetailRow(Icons.AutoMirrored.Outlined.DirectionsRun, uiString(R.string.l10n_today_screen_steps_cdde4f20),
+                    "", "", 0, { it.steps?.toDouble() }, { "%,d".format(it.roundToInt()) }),
+                DetailRow(Icons.Outlined.FitnessCenter, uiString(R.string.nav_workouts), "", "", 0,
+                    { it.exerciseCount?.toDouble() }, { it.roundToInt().toString() }),
             )
-            moreText = uiString(R.string.slate_more_about_effort)
-            emptyText = if (effort == null) uiString(R.string.slate_no_effort_yet) else null
+            emptyText = if (heroValue == null) uiString(R.string.slate_no_effort_yet) else null
         }
         else -> {
-            val rest = row?.let { importedPerf[it.day] ?: RestScorer.restFromDaily(it) }
-            val need = sleepNeedForDay(row, days, importedNeed)
-            val hoursVsNeed = row?.totalSleepMin?.let { it / need * 100.0 }
-            val eff = slatePercent(row?.efficiency)
-            val restorative = slateRestorativePct(row)
-            title = uiString(R.string.nav_today)
             heroLabel = uiString(R.string.trends_rest)
-            heroValue = rest?.let { "${it.roundToInt()}%" }
-            heroFraction = (rest ?: 0.0) / 100.0
-            heroColor = DomainTheme.Rest.color
+            heroValue = row?.let { restOf(it) }
+            heroPercent = true
+            heroFraction = (heroValue ?: 0.0) / 100.0
+            heroColor = SlateUi.sleepBlue
             rows = listOf(
-                ContributorRow(Icons.Filled.Schedule, uiString(R.string.slate_hours_vs_need),
-                    hoursVsNeed?.let { "${it.roundToInt()}%" }, slateBand(hoursVsNeed, 70.0, 85.0)),
-                ContributorRow(Icons.Filled.Bedtime, uiString(R.string.slate_sleep_efficiency),
-                    eff?.let { "${it.roundToInt()}%" }, slateBand(eff, 75.0, 85.0)),
-                ContributorRow(Icons.Filled.Thermostat, uiString(R.string.slate_restorative_sleep),
-                    restorative?.let { "${it.roundToInt()}%" }, slateBand(restorative, 30.0, 40.0)),
-                ContributorRow(Icons.Filled.GraphicEq, uiString(R.string.slate_disturbances),
-                    row?.disturbances?.toString(), slateBand(row?.disturbances?.toDouble(), 10.0, 5.0, higherIsBetter = false)),
+                DetailRow(Icons.Outlined.Schedule, uiString(R.string.slate_hours_of_sleep), "",
+                    uiString(R.string.slate_unit_min), 0, { it.totalSleepMin }, { hoursMinutes(it) }),
+                DetailRow(Icons.Outlined.Bedtime, uiString(R.string.slate_sleep_efficiency), "", pp, 0,
+                    { slatePercent(it.efficiency) }, { "${it.roundToInt()}%" }),
+                DetailRow(Icons.Outlined.Thermostat, uiString(R.string.slate_restorative_sleep), "", pp, 0,
+                    { slateRestorativePct(it) }, { "${it.roundToInt()}%" }),
+                DetailRow(Icons.Outlined.Waves, uiString(R.string.slate_disturbances), "", "", 0,
+                    { it.disturbances?.toDouble() }, { it.roundToInt().toString() }),
             )
-            moreText = uiString(R.string.slate_more_about_sleep)
             emptyText = if (row?.totalSleepMin == null) uiString(R.string.slate_no_sleep_yet) else null
         }
     }
 
-    SlateDetailScaffold(title = title.uppercase(), onBack = onBack) {
-        Box(Modifier.fillMaxWidth().padding(vertical = 8.dp), contentAlignment = Alignment.Center) {
-            GlowRing(
-                fraction = if (heroValue == null) 0f else heroFraction.toFloat(),
-                value = 0.0, color = heroColor, diameter = 220.dp, lineWidth = 12.dp, showsLabel = false,
-            )
+    val date = runCatching { LocalDate.parse(day) }.getOrNull()
+    val title = date?.format(slateDateFormat(SLATE_SKELETON_WEEKDAY))
+        ?.uppercase() ?: day
+    SlateScreen(
+        title = title,
+        onBack = onBack,
+        trailing = {
+            Icon(Icons.Outlined.Info, contentDescription = uiString(R.string.slate_more_details), tint = SlateUi.textPrimary,
+                modifier = Modifier.size(44.dp).clip(CircleShape).clickable(onClick = onMore).padding(8.dp))
+        },
+    ) {
+        Box(Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 12.dp), contentAlignment = Alignment.Center) {
+            SlateRing(fraction = if (heroValue == null) 0f else heroFraction.toFloat(), color = heroColor,
+                diameter = 280.dp, stroke = 17.dp)
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(uiString(R.string.app_name), style = NoopType.overline.copy(letterSpacing = 4.sp), color = Palette.textTertiary)
-                Spacer(Modifier.height(10.dp))
-                Text(heroValue ?: DASH, style = NoopType.title1.copy(fontSize = 44.sp, fontWeight = FontWeight.Bold),
-                    color = Palette.textPrimary)
-                Spacer(Modifier.height(6.dp))
-                Text(heroLabel.uppercase(), style = NoopType.overline.copy(letterSpacing = 1.6.sp), color = Palette.textPrimary)
+                Text(uiString(R.string.app_name).uppercase(), style = SlateType.heading.copy(fontSize = 26.sp, letterSpacing = 5.sp),
+                    color = SlateUi.track)
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    if (heroValue == null) AnnotatedDash else buildAnnotatedString {
+                        append(if (heroPercent) heroValue.roundToInt().toString() else String.format(Locale.getDefault(), "%.1f", heroValue))
+                        if (heroPercent) withStyle(SpanStyle(fontSize = 56.sp)) { append("%") }
+                    },
+                    style = SlateType.num(76.sp), color = SlateUi.textPrimary,
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(heroLabel.uppercase(), style = SlateType.sectionCaps.copy(fontSize = 17.sp, letterSpacing = 2.8.sp),
+                    color = SlateUi.textPrimary)
             }
         }
-        val shape = RoundedCornerShape(Metrics.cardRadius)
-        Column(Modifier.fillMaxWidth().clip(shape).background(Palette.surfaceRaised, shape).padding(vertical = 4.dp)) {
+
+        if (emptyText != null) {
+            SlateSurface { Text(emptyText, style = SlateType.body, color = SlateUi.textSecondary) }
+        }
+
+        SlateSurface(padding = 0.dp) {
             rows.forEachIndexed { i, r ->
-                if (i > 0) Box(Modifier.fillMaxWidth().padding(horizontal = 14.dp).height(1.dp).background(Palette.hairline))
-                Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(r.icon, contentDescription = null, tint = Palette.textSecondary, modifier = Modifier.size(18.dp))
+                if (i > 0) Box(Modifier.fillMaxWidth().padding(horizontal = 20.dp).height(1.dp).background(SlateUi.track))
+                val value = row?.let(r.select)
+                val stats = slateWindowStats(days, day) { r.select(it) }
+                Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 22.dp)) {
+                    Icon(r.icon, contentDescription = null, tint = SlateUi.textSecondary,
+                        modifier = Modifier.padding(top = 2.dp).size(24.dp))
+                    Spacer(Modifier.width(14.dp))
+                    Text(r.label.uppercase(), style = SlateType.sectionCaps.copy(fontSize = 15.sp, letterSpacing = 2.2.sp),
+                        color = SlateUi.textPrimary, modifier = Modifier.weight(1f).padding(top = 4.dp))
                     Spacer(Modifier.width(12.dp))
-                    Text(r.label.uppercase(), style = NoopType.overline.copy(letterSpacing = 1.2.sp), color = Palette.textPrimary,
-                        modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(r.value ?: DASH, style = NoopType.headline.copy(fontWeight = FontWeight.Bold), color = r.tier.tint())
+                    Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1.15f)) {
+                        Text(value?.let(r.format) ?: DASH, style = SlateType.num(32.sp), color = SlateUi.textPrimary)
+                        if (r.unit.isNotEmpty()) Text(r.unit, style = SlateType.body, color = SlateUi.textSecondary)
+                        if (value == null) {
+                            Text(uiString(R.string.slate_no_reading_day), style = SlateType.body, color = SlateUi.textSecondary,
+                                textAlign = TextAlign.End)
+                        } else {
+                            val mean = stats.mean
+                            if (mean != null) {
+                                val avg = listOf(r.format(mean), r.diffUnit.takeIf { r.unit.isNotEmpty() }).filterNotNull()
+                                    .joinToString(" ")
+                                Text(uiPlural(R.plurals.slate_avg_readings, stats.count, avg, stats.count), style = SlateType.body,
+                                    color = SlateUi.textSecondary, textAlign = TextAlign.End)
+                                val diffText = listOf(slateSigned(value - mean, r.decimals), r.diffUnit.takeIf { it.isNotEmpty() })
+                                    .filterNotNull().joinToString(" ")
+                                Text(uiString(R.string.slate_vs_average, diffText), style = SlateType.body,
+                                    color = SlateUi.textSecondary, textAlign = TextAlign.End)
+                            }
+                        }
+                    }
                 }
             }
-            Row(
-                Modifier.fillMaxWidth().padding(10.dp).clip(RoundedCornerShape(8.dp)).background(Palette.surfaceInset)
-                    .padding(horizontal = 10.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-                SlateLegendDot(SlateTier.INSUFFICIENT, uiString(R.string.slate_tier_insufficient))
-                SlateLegendDot(SlateTier.SUFFICIENT, uiString(R.string.slate_tier_sufficient))
-                SlateLegendDot(SlateTier.OPTIMAL, uiString(R.string.slate_tier_optimal))
-            }
-        }
-        Column(
-            Modifier.fillMaxWidth().clip(shape).background(Palette.surfaceRaised, shape)
-                .clickable(onClick = onMore).padding(Metrics.cardPadding),
-        ) {
-            if (emptyText != null) {
-                Text(emptyText, style = NoopType.body, color = Palette.textPrimary)
+            Column(Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 6.dp, bottom = 22.dp)) {
+                Text(uiString(R.string.slate_selected_vs_avg), style = SlateType.cardTitle.copy(fontSize = 18.sp),
+                    color = SlateUi.textPrimary)
                 Spacer(Modifier.height(8.dp))
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(moreText.uppercase(), style = NoopType.overline.copy(letterSpacing = 1.4.sp), color = Palette.accent)
-                Spacer(Modifier.width(6.dp))
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Palette.accent,
-                    modifier = Modifier.size(14.dp))
+                Text(uiString(R.string.slate_selected_vs_avg_body), style = SlateType.body, color = SlateUi.textSecondary)
             }
         }
+        Text(
+            uiString(if (isToday) R.string.slate_today_record else R.string.slate_historical_record, day),
+            style = SlateType.body, color = SlateUi.textSecondary, modifier = Modifier.padding(horizontal = 4.dp),
+        )
     }
 }
 
-@Composable
-private fun SlateLegendDot(tier: SlateTier, label: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.width(10.dp).height(3.dp).background(tier.tint()))
-        Spacer(Modifier.width(6.dp))
-        Text(label, style = NoopType.caption, color = Palette.textSecondary)
-    }
-}
-
-@Composable
-internal fun SlateDetailScaffold(title: String, onBack: () -> Unit, content: @Composable () -> Unit) {
-    val statusTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-    Column(
-        Modifier.fillMaxSize().background(Palette.surfaceBase).verticalScroll(rememberScrollState())
-            .padding(top = statusTop + Metrics.space8)
-            .padding(horizontal = Metrics.space16)
-            .padding(bottom = Metrics.space24 + BottomBarStyleStore.barHeightForContent()),
-        verticalArrangement = Arrangement.spacedBy(Metrics.gap),
-    ) {
-        Box(Modifier.fillMaxWidth().height(40.dp)) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = uiString(R.string.slate_back),
-                tint = Palette.textPrimary,
-                modifier = Modifier.align(Alignment.CenterStart).size(36.dp).clip(CircleShape).clickable(onClick = onBack).padding(4.dp))
-            Text(title, style = NoopType.overline.copy(letterSpacing = 1.8.sp), color = Palette.textPrimary,
-                modifier = Modifier.align(Alignment.Center))
-        }
-        content()
-    }
-}
+private val AnnotatedDash = buildAnnotatedString { append(DASH) }
 
 // MARK: - Health monitor
+
+/** The recent heart-rate window the monitor panel draws, and its bucket size. */
+private const val HM_WINDOW_S = 2L * 3600L
+private const val HM_BUCKET_S = 60L
 
 @Composable
 fun SlateHealthMonitorScreen(
@@ -339,69 +332,151 @@ fun SlateHealthMonitorScreen(
     val live by vm.live.collectAsStateWithLifecycle()
     val bpm by vm.bpm.collectAsStateWithLifecycle()
     val hrNow = displayHr(bpm, live)
-    var todayCurve by remember { mutableStateOf<List<Double>>(emptyList()) }
+    val zones = remember { ProfileStore.from(context).hrZoneSet }
+    var curve by remember { mutableStateOf<List<Double>>(emptyList()) }
+    // Re-read once a minute while the screen is open (and only then): the strap banks HR continuously.
     LaunchedEffect(Unit) {
-        val now = System.currentTimeMillis() / 1000L
-        val start = LocalDate.now().atStartOfDay(java.time.ZoneId.systemDefault()).toEpochSecond()
-        todayCurve = runCatching {
-            vm.repo.hrSamplesUnion(vm.activeStrapId, start, now)
-                .groupBy { it.ts / 300L }.toSortedMap().values.map { b -> b.map { it.bpm }.average() }
-        }.getOrDefault(emptyList())
+        while (true) {
+            val now = System.currentTimeMillis() / 1000L
+            curve = runCatching {
+                vm.repo.hrSamplesUnion(vm.activeStrapId, now - HM_WINDOW_S, now)
+                    .groupBy { it.ts / HM_BUCKET_S }.toSortedMap().values.map { b -> b.map { it.bpm }.average() }
+            }.getOrDefault(curve)
+            delay(60_000L)
+        }
     }
     val tempUnit = remember { UnitPrefs.temperature(context) }
     val vitals = remember(days, tempUnit) { latestVitals(days, tempUnit) }
+    val zone = hrNow?.let { zones.zoneNumber(it.toDouble()) }
 
-    SlateDetailScaffold(title = uiString(R.string.slate_health_monitor).uppercase(), onBack = onBack) {
-        Text(uiString(R.string.slate_heart_rate).uppercase(), style = NoopType.overline.copy(letterSpacing = 1.4.sp),
-            color = Palette.textSecondary)
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column {
-                Icon(Icons.Filled.Favorite, contentDescription = null, tint = Palette.effortColor, modifier = Modifier.size(16.dp))
-                Text(hrNow?.toString() ?: DASH, style = NoopType.title1.copy(fontSize = 34.sp, fontWeight = FontWeight.Bold),
-                    color = Palette.textPrimary)
-                Text(uiString(R.string.slate_bpm), style = NoopType.overline, color = Palette.textSecondary)
+    SlateScreen(title = uiString(R.string.slate_health_monitor).uppercase(), onBack = onBack, horizontalPadding = 0.dp) {
+        // Heart-rate panel: full width, on a grid.
+        Box(Modifier.fillMaxWidth().height(300.dp).background(SlateUi.panel)) {
+            Canvas(Modifier.fillMaxSize()) {
+                val step = 44.dp.toPx()
+                var x = 0f
+                while (x < size.width) { drawLine(SlateUi.gridLine, Offset(x, 0f), Offset(x, size.height), 1f); x += step }
+                var y = 0f
+                while (y < size.height) { drawLine(SlateUi.gridLine, Offset(0f, y), Offset(size.width, y), 1f); y += step }
             }
-            Spacer(Modifier.width(14.dp))
-            Box(Modifier.weight(1f)) { Sparkline(values = todayCurve, color = Palette.effortColor) }
+            Row(Modifier.fillMaxSize().padding(top = 24.dp, bottom = 12.dp)) {
+                Column(Modifier.padding(start = 24.dp).width(118.dp)) {
+                    Text(uiString(R.string.slate_heart_rate).uppercase(), style = SlateType.sectionCaps.copy(fontSize = 17.sp),
+                        color = SlateUi.textPrimary, maxLines = 1, softWrap = false)
+                    Spacer(Modifier.height(14.dp))
+                    Icon(Icons.Filled.Favorite, contentDescription = null, tint = SlateUi.heartBlue, modifier = Modifier.size(40.dp))
+                    Text(hrNow?.toString() ?: DASH, style = SlateType.num(64.sp), color = SlateUi.textPrimary)
+                    Text(uiString(R.string.slate_bpm), style = SlateType.sectionCaps.copy(fontSize = 15.sp, letterSpacing = 1.sp),
+                        color = SlateUi.textSecondary)
+                    Spacer(Modifier.height(10.dp))
+                    Text(zone?.let { uiString(R.string.slate_zone_n, it) } ?: DASH, style = SlateType.cardTitle.copy(fontSize = 19.sp),
+                        color = SlateUi.textSecondary)
+                    Spacer(Modifier.height(10.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        for (z in 1..5) {
+                            Box(Modifier.width(18.dp).height(3.dp).clip(RoundedCornerShape(2.dp))
+                                .background(if (zone != null && z <= zone) SlateUi.heartBlue else SlateUi.track))
+                        }
+                    }
+                }
+                Box(Modifier.weight(1f).fillMaxHeight().padding(end = 18.dp, top = 70.dp, bottom = 40.dp)) {
+                    SlateHrCurve(curve)
+                }
+            }
         }
-        val shown = vitals.filter { it.key in setOf("resp", "rhr", "hrv", "spo2", "skin") }
-        shown.chunked(2).forEach { pair ->
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Metrics.gap)) {
-                pair.forEach { v -> SlateVitalTile(v, Modifier.weight(1f)) { onOpenVital(v.key) } }
-                if (pair.size == 1) Spacer(Modifier.weight(1f))
+
+        Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            val order = listOf("resp", "spo2", "rhr", "hrv", "skin")
+            val shown = order.mapNotNull { k -> vitals.firstOrNull { it.key == k } }
+            shown.chunked(2).forEach { pair ->
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                    pair.forEach { v ->
+                        val skinDev = if (v.key == "skin") days.lastOrNull { it.day == v.readingDay }?.skinTempDevC else null
+                        SlateVitalTile(v, skinDev, tempUnit, Modifier.weight(1f)) { onOpenVital(v.key) }
+                    }
+                    if (pair.size == 1) Spacer(Modifier.weight(1f))
+                }
             }
+            Text(uiString(R.string.slate_monitor_footer), style = SlateType.body, color = SlateUi.textSecondary,
+                modifier = Modifier.padding(top = 8.dp))
         }
     }
 }
 
+/** The recent HR line: blue stroke over a soft fill, a dashed "now" marker and an end dot. */
 @Composable
-private fun SlateVitalTile(v: Vital, modifier: Modifier, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(Metrics.cardRadius)
-    val out = v.banding.band == VitalBands.Band.OUT_OF_RANGE
-    Column(modifier.clip(shape).background(Palette.surfaceRaised, shape).clickable(onClick = onClick).padding(12.dp)) {
-        Text(v.label.uppercase(), style = NoopType.overline.copy(letterSpacing = 1.2.sp), color = Palette.textPrimary,
-            maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Spacer(Modifier.height(10.dp))
-        Row(verticalAlignment = Alignment.Bottom) {
-            Text(v.value?.let(v.format) ?: DASH, style = NoopType.title2.copy(fontWeight = FontWeight.Bold),
-                color = if (out) Palette.statusWarning else Palette.textPrimary)
-            Spacer(Modifier.width(4.dp))
-            Text(v.unit, style = NoopType.caption, color = Palette.textSecondary)
+private fun SlateHrCurve(values: List<Double>) {
+    Canvas(Modifier.fillMaxSize()) {
+        if (values.size < 2) return@Canvas
+        val lo = values.min() - 12.0
+        val hi = values.max() + 12.0
+        val span = (hi - lo).coerceAtLeast(1.0)
+        fun px(i: Int) = size.width * i / (values.size - 1).toFloat()
+        fun py(v: Double) = (size.height * (1.0 - (v - lo) / span)).toFloat()
+        val line = Path().apply {
+            moveTo(px(0), py(values[0]))
+            for (i in 1 until values.size) lineTo(px(i), py(values[i]))
         }
-        Spacer(Modifier.height(8.dp))
-        val calibrating = v.banding.basis != VitalBands.Basis.PERSONAL
-        Row(
-            Modifier.clip(RoundedCornerShape(6.dp)).background(Palette.surfaceInset).padding(horizontal = 6.dp, vertical = 3.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (calibrating) {
-                Icon(Icons.Filled.HourglassEmpty, contentDescription = null, tint = Palette.textSecondary, modifier = Modifier.size(11.dp))
-                Spacer(Modifier.width(4.dp))
-            }
+        val fill = Path().apply {
+            addPath(line)
+            lineTo(px(values.size - 1), size.height + 40.dp.toPx())
+            lineTo(px(0), size.height + 40.dp.toPx())
+            close()
+        }
+        drawPath(fill, Brush.verticalGradient(listOf(SlateUi.heartBlue.copy(alpha = 0.16f), Color.Transparent)))
+        drawPath(line, SlateUi.heartBlue, style = Stroke(width = 2.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round))
+        val endX = px(values.size - 1)
+        drawLine(SlateUi.textTertiary, Offset(endX, -70.dp.toPx()), Offset(endX, size.height + 40.dp.toPx()), 1.dp.toPx(),
+            pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 6f)))
+        drawCircle(SlateUi.heartBlue, 3.dp.toPx(), Offset(endX, py(values.last())))
+    }
+}
+
+@Composable
+private fun SlateVitalTile(v: Vital, skinDevC: Double?, tempUnit: TemperatureUnit, modifier: Modifier, onClick: () -> Unit) {
+    val (icon, title) = when (v.key) {
+        "resp" -> Icons.Outlined.Waves to uiString(R.string.slate_respiratory_rate)
+        "spo2" -> Icons.Outlined.WaterDrop to uiString(R.string.slate_blood_oxygen)
+        "rhr" -> Icons.Outlined.Timeline to uiString(R.string.slate_rhr_short)
+        "hrv" -> Icons.Outlined.FavoriteBorder to "HRV"
+        else -> Icons.Outlined.Thermostat to uiString(R.string.slate_skin_temp)
+    }
+    val shape = RoundedCornerShape(22.dp)
+    Column(modifier.clip(shape).background(SlateUi.card, shape).clickable(onClick = onClick).padding(18.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(icon, contentDescription = null, tint = SlateUi.textSecondary, modifier = Modifier.size(24.dp))
+            Spacer(Modifier.width(12.dp))
+            Text(title.uppercase(), style = SlateType.cardCaps.copy(fontSize = 14.sp, letterSpacing = 0.8.sp),
+                color = SlateUi.textSecondary, maxLines = 2)
+        }
+        Spacer(Modifier.height(26.dp))
+        val value = v.value
+        if (value == null) {
+            Box(Modifier.padding(vertical = 22.dp).width(40.dp).height(4.dp).background(SlateUi.textTertiary))
+        } else {
             Text(
-                if (calibrating) uiString(R.string.slate_calibrating_range) else (v.rangeCaption ?: uiString(R.string.slate_all_in_range)),
-                style = NoopType.footnote, color = Palette.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                buildAnnotatedString {
+                    append(v.format(value))
+                    withStyle(SpanStyle(fontFamily = SlateFonts.text, fontSize = 20.sp)) { append(" " + v.unit) }
+                },
+                style = SlateType.num(44.sp), color = SlateUi.textPrimary, maxLines = 1,
             )
         }
+        if (v.key == "skin" && value != null && skinDevC != null && v.unit.contains("°") && !v.unit.contains("Δ")) {
+            val dev = if (tempUnit == TemperatureUnit.FAHRENHEIT) skinDevC * 1.8 else skinDevC
+            Text(slateSigned(dev, 1) + " " + v.unit.replace("°", "Δ°"), style = SlateType.body.copy(fontSize = 16.sp),
+                color = SlateUi.textSecondary)
+        }
+        Spacer(Modifier.height(14.dp))
+        val (kind, text) = when {
+            value == null -> SlateChipKind.NEUTRAL to uiString(R.string.slate_no_reading)
+            v.banding.band == VitalBands.Band.NO_DATA -> SlateChipKind.CALIBRATING to uiString(R.string.slate_calibrating_range)
+            v.banding.band == VitalBands.Band.OUT_OF_RANGE && v.banding.basis == VitalBands.Basis.PERSONAL ->
+                SlateChipKind.WARNING to uiString(R.string.slate_off_baseline)
+            v.banding.band == VitalBands.Band.OUT_OF_RANGE -> SlateChipKind.WARNING to uiString(R.string.slate_outside_reference)
+            v.banding.basis == VitalBands.Basis.PERSONAL -> SlateChipKind.POSITIVE to uiString(R.string.slate_in_your_range)
+            else -> SlateChipKind.POSITIVE to uiString(R.string.slate_in_reference_range)
+        }
+        SlateChip(kind, text)
     }
 }

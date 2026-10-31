@@ -2882,4 +2882,75 @@
     <string name="slate_heart_rate">心率</string>
     <string name="slate_calibrating_range">正在校准范围</string>
     <string name="slate_bpm">次/分</string>
+    <!-- Fork: Slate layout v2 (reference screenshots) -->
+    <string name="slate_add_activity">添加活动</string>
+    <string name="slate_start_activity">开始活动</string>
+    <string name="slate_daily_outlook">今日展望</string>
+    <string name="slate_daily_features">每日功能</string>
+    <string name="slate_open">打开</string>
+    <string name="slate_close">关闭</string>
+    <string name="slate_activities">活动</string>
+    <string name="slate_vitals_update">生命体征更新</string>
+    <string name="slate_vitals_none">暂无生命体征读数。夜间佩戴手环即可启用健康监测。</string>
+    <string name="slate_vitals_calibrating">仍在学习你的个人范围，目前读数将与参考范围进行比较。</string>
+    <string name="slate_vitals_all_in">你的所有生命体征都在日常基线范围内。</string>
+    <string name="slate_view_health_monitor">查看健康监测</string>
+    <string name="slate_unit_pp">个百分点</string>
+    <string name="slate_unit_breaths">次/分</string>
+    <string name="slate_unit_min">分钟</string>
+    <string name="slate_sleep_score">睡眠分数</string>
+    <string name="slate_hours_of_sleep">睡眠时长</string>
+    <string name="slate_more_details">更多详情</string>
+    <string name="slate_vs_average">较平均 %1$s</string>
+    <string name="slate_no_reading_day">当天没有读数</string>
+    <string name="slate_selected_vs_avg">所选日期与 30 天平均值对比</string>
+    <string name="slate_selected_vs_avg_body">包含所选日期。缺失的读数不计入；每行显示其有记录的天数。</string>
+    <string name="slate_today_record">今日记录 · %1$s</string>
+    <string name="slate_historical_record">历史每日记录 · %1$s</string>
+    <string name="slate_zone_n">区间 %1$d</string>
+    <string name="slate_monitor_footer">将最新读数与你的日常规律进行比较。点按某项指标可查看完整历史。</string>
+    <string name="slate_blood_oxygen">血氧 (SpO₂)</string>
+    <string name="slate_rhr_short">静息心率</string>
+    <string name="slate_skin_temp">皮肤温度</string>
+    <string name="slate_no_reading">无读数</string>
+    <string name="slate_off_baseline">偏离你的基线</string>
+    <string name="slate_outside_reference">超出参考范围</string>
+    <string name="slate_in_your_range">在你的范围内</string>
+    <string name="slate_in_reference_range">在参考范围内</string>
+    <string name="slate_fitness_age">健身年龄</string>
+    <string name="slate_updated_on">更新于 %1$s</string>
+    <string name="slate_fa_add_profile">请在设置中添加年龄和性别</string>
+    <string name="slate_fa_same">与你的年龄相同</string>
+    <string name="slate_fa_older">老 %1$s 岁</string>
+    <string name="slate_fa_younger">年轻 %1$s 岁</string>
+    <string name="slate_pace_of_aging">衰老速度</string>
+    <string name="slate_pace_value">%1$s×</string>
+    <string name="slate_unavailable">不可用</string>
+    <string name="slate_per_week">%1$s 天/周</string>
+    <string name="slate_active_days">活跃天数</string>
+    <string name="slate_fitness">体能</string>
+    <string name="slate_vo2max">最大摄氧量</string>
+    <string name="slate_6m_avg">6 个月平均</string>
+    <string name="slate_30d_avg">30 天平均</string>
+    <string name="slate_years">岁</string>
+    <string name="slate_years_signed">%1$s 岁</string>
+    <string name="slate_age_impact">年龄影响</string>
+    <string name="slate_age_impact_note">年龄影响使用与健身年龄相同的最近七天数据。公式未使用的因素不显示影响。</string>
+    <string name="slate_monitors">监测</string>
+    <string name="slate_all_health_data">全部健康数据</string>
+    <plurals name="slate_streak_days">
+        <item quantity="other">连续 %1$d 天</item>
+    </plurals>
+    <plurals name="slate_vitals_outside">
+        <item quantity="other">%1$d 项生命体征超出你的日常基线。请查看详细历史。</item>
+    </plurals>
+    <plurals name="slate_avg_readings">
+        <item quantity="other">30 天平均 %1$s · %2$d 次读数</item>
+    </plurals>
+    <plurals name="slate_fa_nights_needed">
+        <item quantity="other">还需佩戴 %1$d 晚</item>
+    </plurals>
+    <plurals name="slate_recorded_days">
+        <item quantity="other">%1$d 天有记录</item>
+    </plurals>
 </resources>

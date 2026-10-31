@@ -2925,4 +2925,80 @@
     <string name="slate_heart_rate">Herzfrequenz</string>
     <string name="slate_calibrating_range">Bereich wird kalibriert</string>
     <string name="slate_bpm">BPM</string>
+    <!-- Fork: Slate layout v2 (reference screenshots) -->
+    <string name="slate_add_activity">Aktivität hinzufügen</string>
+    <string name="slate_start_activity">Aktivität starten</string>
+    <string name="slate_daily_outlook">Tagesausblick</string>
+    <string name="slate_daily_features">Tagesfunktionen</string>
+    <string name="slate_open">Öffnen</string>
+    <string name="slate_close">Schließen</string>
+    <string name="slate_activities">Aktivitäten</string>
+    <string name="slate_vitals_update">Vitalwerte-Update</string>
+    <string name="slate_vitals_none">Noch keine Vitalwerte. Trage dein Armband über Nacht, um deinen Gesundheitsmonitor zu starten.</string>
+    <string name="slate_vitals_calibrating">Deine persönlichen Bereiche werden noch gelernt, daher werden Messwerte vorerst mit Referenzbereichen verglichen.</string>
+    <string name="slate_vitals_all_in">Alle deine Vitalwerte liegen in deinem typischen Bereich.</string>
+    <string name="slate_view_health_monitor">Gesundheitsmonitor öffnen</string>
+    <string name="slate_unit_pp">Pp</string>
+    <string name="slate_unit_breaths">Atemzüge/Min.</string>
+    <string name="slate_unit_min">Min.</string>
+    <string name="slate_sleep_score">Schlafwert</string>
+    <string name="slate_hours_of_sleep">Schlafstunden</string>
+    <string name="slate_more_details">Weitere Details</string>
+    <string name="slate_vs_average">%1$s ggü. Durchschnitt</string>
+    <string name="slate_no_reading_day">Kein Messwert für diesen Tag</string>
+    <string name="slate_selected_vs_avg">Gewählter Tag vs. 30-Tage-Durchschnitt</string>
+    <string name="slate_selected_vs_avg_body">Enthält den gewählten Tag. Fehlende Messwerte werden ausgelassen; jede Zeile zeigt ihre Anzahl erfasster Tage.</string>
+    <string name="slate_today_record">Heutiger Eintrag · %1$s</string>
+    <string name="slate_historical_record">Historischer Tageseintrag · %1$s</string>
+    <string name="slate_zone_n">Zone %1$d</string>
+    <string name="slate_monitor_footer">Vergleiche deine neuesten Werte mit deinen üblichen Mustern. Tippe auf einen Wert für den vollständigen Verlauf.</string>
+    <string name="slate_blood_oxygen">Blutsauerstoff (SpO₂)</string>
+    <string name="slate_rhr_short">RHF</string>
+    <string name="slate_skin_temp">Hauttemp.</string>
+    <string name="slate_no_reading">Kein Messwert</string>
+    <string name="slate_off_baseline">Abweichung von deiner Norm</string>
+    <string name="slate_outside_reference">Außerhalb des Referenzbereichs</string>
+    <string name="slate_in_your_range">In deinem Bereich</string>
+    <string name="slate_in_reference_range">Im Referenzbereich</string>
+    <string name="slate_fitness_age">Fitnessalter</string>
+    <string name="slate_updated_on">Aktualisiert %1$s</string>
+    <string name="slate_fa_add_profile">Alter und Geschlecht in den Einstellungen angeben</string>
+    <string name="slate_fa_same">Genau dein Alter</string>
+    <string name="slate_fa_older">%1$s Jahre älter</string>
+    <string name="slate_fa_younger">%1$s Jahre jünger</string>
+    <string name="slate_pace_of_aging">Alterungstempo</string>
+    <string name="slate_pace_value">%1$s×</string>
+    <string name="slate_unavailable">Nicht verfügbar</string>
+    <string name="slate_per_week">%1$s / Woche</string>
+    <string name="slate_active_days">Aktive Tage</string>
+    <string name="slate_fitness">Fitness</string>
+    <string name="slate_vo2max">VO₂max</string>
+    <string name="slate_6m_avg">6-Monats-Ø</string>
+    <string name="slate_30d_avg">30-Tage-Ø</string>
+    <string name="slate_years">Jahre</string>
+    <string name="slate_years_signed">%1$s Jahre</string>
+    <string name="slate_age_impact">Einfluss aufs Alter</string>
+    <string name="slate_age_impact_note">Der Einfluss aufs Alter nutzt dieselben letzten sieben Tage wie dein Fitnessalter. Faktoren, die die Formel nicht nutzt, zeigen keinen Einfluss.</string>
+    <string name="slate_monitors">Monitore</string>
+    <string name="slate_all_health_data">Alle Gesundheitsdaten</string>
+    <plurals name="slate_streak_days">
+        <item quantity="one">%1$d Tag in Folge</item>
+        <item quantity="other">%1$d Tage in Folge</item>
+    </plurals>
+    <plurals name="slate_vitals_outside">
+        <item quantity="one">%1$d Vitalwert liegt außerhalb deines typischen Bereichs. Sieh dir deinen Verlauf an.</item>
+        <item quantity="other">%1$d Vitalwerte liegen außerhalb deines typischen Bereichs. Sieh dir deinen Verlauf an.</item>
+    </plurals>
+    <plurals name="slate_avg_readings">
+        <item quantity="one">30-T.-Ø %1$s · %2$d Messung</item>
+        <item quantity="other">30-T.-Ø %1$s · %2$d Messungen</item>
+    </plurals>
+    <plurals name="slate_fa_nights_needed">
+        <item quantity="one">Noch %1$d Nacht Tragezeit nötig</item>
+        <item quantity="other">Noch %1$d Nächte Tragezeit nötig</item>
+    </plurals>
+    <plurals name="slate_recorded_days">
+        <item quantity="one">%1$d erfasster Tag</item>
+        <item quantity="other">%1$d erfasste Tage</item>
+    </plurals>
 </resources>
