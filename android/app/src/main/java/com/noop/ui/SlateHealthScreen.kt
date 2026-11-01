@@ -132,6 +132,9 @@ internal fun slateActiveDaysPerWeek(rows: List<DailyMetric>, day: String, span: 
     return window.count { (it.strain ?: 0.0) >= 30.0 } * 7.0 / window.size
 }
 
+/** Within this many years of the calendar age the line reads "Same as your age". */
+internal const val SLATE_SAME_AGE_YEARS = 0.4
+
 private const val DASH = "–"
 
 private class Factor(
@@ -225,7 +228,7 @@ fun SlateHealthScreen(
                     fa == null -> uiPlural(R.plurals.slate_fa_nights_needed,
                         FitnessAgeEngine.nightsUntilReady(rhrNights).coerceAtLeast(1),
                         FitnessAgeEngine.nightsUntilReady(rhrNights).coerceAtLeast(1))
-                    abs(fa - age) < 0.05 -> uiString(R.string.slate_fa_same)
+                    abs(fa - age) <= SLATE_SAME_AGE_YEARS -> uiString(R.string.slate_fa_same)
                     fa > age -> uiString(R.string.slate_fa_older, String.format(Locale.getDefault(), "%.1f", fa - age))
                     else -> uiString(R.string.slate_fa_younger, String.format(Locale.getDefault(), "%.1f", age - fa))
                 }
