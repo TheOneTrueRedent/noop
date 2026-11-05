@@ -1561,18 +1561,21 @@ fun SettingsScreen(
             // Fork: Slate look — one switch for the calm slate canvas, ring gauges, solid cards and a trimmed
             // Today. Off restores exactly what it changed. The local mirrors below are re-read so the rows
             // under it reflect the new values at once.
-            SettingsToggleRow(
-                title = uiString(R.string.fork_slate_look_title),
-                detail = uiString(R.string.fork_slate_look_detail),
-                checked = SlateLook.enabled,
-                onCheckedChange = {
-                    SlateLook.setEnabled(context, it)
-                    themeMode = AppearancePrefs.mode
-                    todayRingGauges = NoopPrefs.todayRingGauges(context)
-                    showDayCycleBackground = NoopPrefs.showDayCycleBackground(context)
-                    cardOpacity = NoopPrefs.cardOpacityPercent(context) / 100f
-                },
-            )
+            // Fork-only (Saħħa): Sage or Conqueror, both dark, both over the Slate layout (SahhaLook.kt).
+            SettingsFormRow(label = uiString(R.string.sahha_look_title)) {
+                SegmentedPillControl(
+                    items = AppLook.entries.toList(),
+                    selection = SahhaLook.look,
+                    label = {
+                        when (it) {
+                            AppLook.SAGE -> uiString(R.string.sahha_look_sage)
+                            AppLook.CONQUEROR -> uiString(R.string.sahha_look_conqueror)
+                        }
+                    },
+                    onSelect = { SahhaLook.select(context, it) },
+                )
+            }
+            Text(uiString(R.string.sahha_look_detail), style = NoopType.caption, color = Palette.textTertiary)
             SettingsRowDivider()
             // Theme presets — one-tap bundles coordinating accent + chart world + backdrop + card opacity.
             // Derived (no stored value): tweaking any control below flips this to Custom.

@@ -2990,8 +2990,8 @@
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
     <string name="sahha_date_of_birth">Fecha de nacimiento</string>
-    <string name="sahha_auto_track_title">Registrar paseos y ejercicio automáticamente</string>
-    <string name="sahha_auto_track_detail">Tras una sincronización, los paseos y carreras terminados (del contador de pasos de tu banda) y otro ejercicio sostenido (de la frecuencia cardiaca) se guardan solos como entrenamientos. Cada uno se puede editar, renombrar o borrar, y uno borrado no se vuelve a añadir. Solo en este teléfono.</string>
+    <string name="sahha_auto_track_title">Registrar paseos y carreras automáticamente</string>
+    <string name="sahha_auto_track_detail">Tras una sincronización, los paseos y carreras terminados (del contador de pasos de tu banda) se guardan solos como entrenamientos. Cada uno se puede editar, renombrar o borrar, y uno borrado no se vuelve a añadir. Solo en este teléfono.</string>
     <string name="sahha_photo_card">Tarjeta de foto</string>
     <string name="sahha_photo_take">Hacer foto</string>
     <string name="sahha_photo_choose">Elegir foto</string>
@@ -3001,4 +3001,94 @@
     <string name="sahha_photo_rhr">FC en reposo %1$d</string>
     <string name="sahha_photo_hrv">VFC %1$d ms</string>
     <string name="sahha_photo_steps">%1$s pasos</string>
+    <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
+    <string name="sahha_look_title">Estilo</string>
+    <string name="sahha_look_sage">Sabio</string>
+    <string name="sahha_look_conqueror">Conquistador</string>
+    <string name="sahha_look_detail">Dos estilos oscuros con los mismos números. Sabio: jade y oro, sereno pero poderoso. Conquistador: violeta y carmesí acorazados.</string>
+    <string name="sahha_form_seiza">Seiza</string>
+    <string name="sahha_form_shu">Shu</string>
+    <string name="sahha_form_ha">Ha</string>
+    <string name="sahha_form_mushin">Mushin</string>
+    <string name="sahha_form_kiai">Kiai</string>
+    <string name="sahha_form_kiai_range">arrebato</string>
+    <string name="sahha_effort_to_go">Por hacer</string>
+    <string name="sahha_effort_on_target">En objetivo</string>
+    <string name="sahha_effort_above">Por encima de tu rango</string>
+    <string name="sahha_principle_seiza_title">Seiza · quietud</string>
+    <string name="sahha_principle_seiza_body">La carga está baja. Hoy el descanso es el entrenamiento: movimiento suave y acostarse pronto.</string>
+    <string name="sahha_principle_shu_title">Fudōshin · la mente inamovible</string>
+    <string name="sahha_principle_shu_body">Mantén el esfuerzo entre %1$s y %2$s. Trabajo constante, nada heroico.</string>
+    <string name="sahha_principle_ha_title">Ha · romper la forma</string>
+    <string name="sahha_principle_ha_body">Hoy tienes margen. Lleva el esfuerzo a lo alto de %1$s–%2$s.</string>
+    <string name="sahha_principle_mushin_title">Mushin · no-mente</string>
+    <string name="sahha_principle_mushin_body">La carga y la VFC están altas. Todo encaja: aprovéchalo.</string>
+    <string name="sahha_principle_kiai_title">Kiai · el precio</string>
+    <string name="sahha_principle_kiai_body">El esfuerzo %1$s supera tu rango (%2$s). Mañana espera menos carga y compénsalo con un sueño largo.</string>
+    <string name="sahha_band_title">Tu rango de ±5 años</string>
+    <string name="sahha_band_you_are">tienes %1$s</string>
+    <string name="sahha_sleeping_hr">Frecuencia cardiaca en sueño</string>
+    <string name="sahha_bpm">lpm</string>
+    <string name="sahha_sleeping_hr_normal">En línea con tus últimas noches</string>
+    <string name="sahha_sleeping_hr_above">%1$s lpm por encima de tus últimas noches</string>
+    <string name="sahha_sleeping_hr_below">%1$s lpm por debajo de tus últimas noches</string>
+    <string name="sahha_sleeping_hr_note">Media de todo el sueño principal. Más baja de lo habitual significa que descansaste bien. Más alta suele seguir al alcohol, una cena tardía, una enfermedad o una sesión dura tardía.</string>
+    <string name="sahha_checkin_title">Revisión matinal</string>
+    <string name="sahha_checkin_reason">Anoche fue movida: frecuencia cardiaca en sueño %1$s lpm por encima de lo normal.</string>
+    <string name="sahha_checkin_question">¿Bebiste alcohol ayer?</string>
+    <string name="sahha_yes">Sí</string>
+    <string name="sahha_no">No</string>
+    <string name="sahha_skip">Omitir</string>
+    <string name="sahha_caffeine">Cafeína hoy</string>
+    <string name="sahha_caffeine_mg">%1$d mg</string>
+    <string name="sahha_caffeine_last">la última a las %1$s</string>
+    <string name="sahha_marishi">Marishi</string>
+    <string name="sahha_marishi_intro">Pregunta por tus propios números. Marishi responde a través del agente de conversación de Home Assistant con tus últimos 7 días.</string>
+    <string name="sahha_marishi_hint">Pregunta a Marishi</string>
+    <string name="sahha_marishi_send">Enviar</string>
+    <string name="sahha_marishi_thinking">Marishi está pensando…</string>
+    <string name="sahha_marishi_not_configured">Marishi necesita primero el envío a Home Assistant (Ajustes › Envío autoalojado).</string>
+    <string name="sahha_marishi_no_agent">Elige el agente de conversación de Marishi en Home Assistant: NOOP Push Receiver › Configurar.</string>
+    <string name="sahha_marishi_failed">Marishi no ha podido responder ahora. Inténtalo de nuevo en un momento.</string>
+    <string name="sahha_quests">Shugyō</string>
+    <string name="sahha_streak_rule">Un día cuenta si alcanzaste tu rango de esfuerzo, descansaste un día de carga baja o dormiste 7 horas.</string>
+    <string name="sahha_this_week">Esta semana</string>
+    <string name="sahha_sparks">Chispas</string>
+    <string name="sahha_orb_tint">Color del orbe</string>
+    <string name="sahha_quest_progress">%1$d de %2$d</string>
+    <string name="sahha_chest_locked">Cofre cerrado</string>
+    <string name="sahha_chest_open">Abrir cofre</string>
+    <string name="sahha_chest_opened">Cofre abierto</string>
+    <plurals name="sahha_streak_days">
+        <item quantity="one">%d día seguido</item>
+        <item quantity="other">%d días seguidos</item>
+    </plurals>
+    <plurals name="sahha_tint_unlock">
+        <item quantity="one">Cada cofre desbloquea el siguiente color del orbe.</item>
+        <item quantity="other">Cada %d cofres desbloquean el siguiente color del orbe.</item>
+    </plurals>
+    <plurals name="sahha_quest_train">
+        <item quantity="one">Entrena %d vez</item>
+        <item quantity="other">Entrena %d veces</item>
+    </plurals>
+    <plurals name="sahha_quest_hard_easy">
+        <item quantity="one">Tras un día duro, uno suave</item>
+        <item quantity="other">Tras %d días duros, días suaves</item>
+    </plurals>
+    <plurals name="sahha_quest_sleep">
+        <item quantity="one">Dormir 7 horas %d noche</item>
+        <item quantity="other">Dormir 7 horas %d noches</item>
+    </plurals>
+    <plurals name="sahha_quest_steps">
+        <item quantity="one">Camina %1$s pasos %2$d día</item>
+        <item quantity="other">Camina %1$s pasos %2$d días</item>
+    </plurals>
+    <plurals name="sahha_sleeping_hr_building">
+        <item quantity="one">Falta %d noche para fijar tu normal</item>
+        <item quantity="other">Faltan %d noches para fijar tu normal</item>
+    </plurals>
+    <plurals name="sahha_caffeine_drinks">
+        <item quantity="one">%d bebida</item>
+        <item quantity="other">%d bebidas</item>
+    </plurals>
 </resources>

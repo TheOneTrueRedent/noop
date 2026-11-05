@@ -219,7 +219,8 @@ fun SlateHealthScreen(
         }
 
         Box(Modifier.fillMaxWidth().height(330.dp), contentAlignment = Alignment.Center) {
-            SlateFitnessOrb(Modifier.size(310.dp), lit = fitnessAge != null)
+            if (SahhaLook.sage) SlateFitnessOrb(Modifier.size(310.dp), lit = fitnessAge != null)
+            else SahhaHexFrame(Modifier.size(290.dp), lit = fitnessAge != null)
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 val fa = fitnessAge
                 Text(fa?.let { String.format(Locale.getDefault(), "%.1f", it) } ?: DASH, style = SlateType.num(84.sp),
@@ -236,12 +237,17 @@ fun SlateHealthScreen(
                     fa > age -> uiString(R.string.slate_fa_older, String.format(Locale.getDefault(), "%.1f", fa - age))
                     else -> uiString(R.string.slate_fa_younger, String.format(Locale.getDefault(), "%.1f", age - fa))
                 }
-                Text(line, style = SlateType.cardTitle.copy(fontSize = 19.sp), color = SlateUi.deltaBlue,
+                Text(line, style = SlateType.cardTitle.copy(fontSize = 19.sp),
+                    color = if (fa != null && fa < age) SlateUi.positive else SlateUi.deltaBlue,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 60.dp)
                         .then(if (fa == null && profile.age <= 0) Modifier.clickable(onClick = onOpenSettings) else Modifier))
             }
         }
+
+        // Fork-only (Saħħa): the ±5-year band, then last night's sleeping heart rate.
+        if (fitnessAge != null) SahhaBodyAgeBandCard(fitnessAge = fitnessAge!!, age = age)
+        SahhaSleepingHrCard(vm)
 
         Row(Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(uiString(R.string.slate_pace_of_aging).uppercase(), style = SlateType.sectionCaps.copy(fontSize = 16.sp, letterSpacing = 3.sp),
@@ -418,9 +424,20 @@ private fun SlateFitnessOrb(modifier: Modifier, lit: Boolean) {
         }
     }
     val dim = if (lit) 1f else 0.35f
+    val aura = SahhaLook.sage
     Canvas(modifier) {
         val c = Offset(size.width / 2f, size.height / 2f)
         val r0 = size.minDimension / 2f * 0.9f
+        // Fork-only (Saħħa, Sage): the halo the body-age orb sits in.
+        if (aura) {
+            drawCircle(
+                Brush.radialGradient(
+                    0f to SlateUi.orbEdge.copy(alpha = 0.34f * dim), 0.6f to SlateUi.orbEdge.copy(alpha = 0.10f * dim),
+                    1f to Color.Transparent, center = c, radius = r0 * 1.55f,
+                ),
+                radius = r0 * 1.55f, center = c,
+            )
+        }
         fun radiusAt(theta: Float): Float = r0 * (1f +
             0.055f * sin(2 * theta + t) +
             0.04f * sin(3 * theta - 1.3f * t + 1f) +
@@ -445,9 +462,9 @@ private fun SlateFitnessOrb(modifier: Modifier, lit: Boolean) {
             drawCircle(
                 Brush.radialGradient(
                     0f to SlateUi.orbCore,
-                    0.45f to Color(0xFF1A1611),
+                    0.45f to SlateUi.orbMid,
                     0.78f to SlateUi.orbBody.copy(alpha = dim),
-                    1f to Color(0xFF8A6A3C).copy(alpha = dim),
+                    1f to SlateUi.orbEdge.copy(alpha = dim),
                     center = c, radius = r0 * 1.1f,
                 ),
                 radius = r0 * 1.2f, center = c,

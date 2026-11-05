@@ -3016,8 +3016,8 @@
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
     <string name="sahha_date_of_birth">Data urodzenia</string>
-    <string name="sahha_auto_track_title">Automatycznie zapisuj spacery i ćwiczenia</string>
-    <string name="sahha_auto_track_detail">Po synchronizacji zakończone spacery i biegi (z licznika kroków opaski) oraz inny dłuższy wysiłek (z tętna) zapisują się same jako treningi. Każdy można edytować, przemianować lub usunąć, a usunięty nie zostanie dodany ponownie. Tylko na tym telefonie.</string>
+    <string name="sahha_auto_track_title">Automatycznie zapisuj spacery i biegi</string>
+    <string name="sahha_auto_track_detail">Po synchronizacji zakończone spacery i biegi (z licznika kroków opaski) zapisują się same jako treningi. Każdy można edytować, przemianować lub usunąć, a usunięty nie zostanie dodany ponownie. Tylko na tym telefonie.</string>
     <string name="sahha_photo_card">Karta ze zdjęciem</string>
     <string name="sahha_photo_take">Zrób zdjęcie</string>
     <string name="sahha_photo_choose">Wybierz zdjęcie</string>
@@ -3027,4 +3027,110 @@
     <string name="sahha_photo_rhr">Tętno spoczynkowe %1$d</string>
     <string name="sahha_photo_hrv">Zmienność rytmu %1$d ms</string>
     <string name="sahha_photo_steps">%1$s kroków</string>
+    <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
+    <string name="sahha_look_title">Styl</string>
+    <string name="sahha_look_sage">Mędrzec</string>
+    <string name="sahha_look_conqueror">Zdobywca</string>
+    <string name="sahha_look_detail">Dwa ciemne style z tymi samymi liczbami. Mędrzec: jadeit i złoto, spokojny, ale potężny. Zdobywca: opancerzony fiolet i karmazyn.</string>
+    <string name="sahha_form_seiza">Seiza</string>
+    <string name="sahha_form_shu">Shu</string>
+    <string name="sahha_form_ha">Ha</string>
+    <string name="sahha_form_mushin">Mushin</string>
+    <string name="sahha_form_kiai">Kiai</string>
+    <string name="sahha_form_kiai_range">zryw</string>
+    <string name="sahha_effort_to_go">Do zrobienia</string>
+    <string name="sahha_effort_on_target">W celu</string>
+    <string name="sahha_effort_above">Powyżej zakresu</string>
+    <string name="sahha_principle_seiza_title">Seiza · bezruch</string>
+    <string name="sahha_principle_seiza_body">Naładowanie jest niskie. Dziś odpoczynek jest treningiem: lekki ruch i wczesny sen.</string>
+    <string name="sahha_principle_shu_title">Fudōshin · niewzruszony umysł</string>
+    <string name="sahha_principle_shu_body">Utrzymaj wysiłek między %1$s a %2$s. Równa praca, bez bohaterstwa.</string>
+    <string name="sahha_principle_ha_title">Ha · przełam formę</string>
+    <string name="sahha_principle_ha_body">Dziś masz zapas. Doprowadź wysiłek do górnej granicy %1$s–%2$s.</string>
+    <string name="sahha_principle_mushin_title">Mushin · nie-umysł</string>
+    <string name="sahha_principle_mushin_body">Naładowanie i HRV są wysokie. Wszystko się zgrywa: wykorzystaj to.</string>
+    <string name="sahha_principle_kiai_title">Kiai · cena</string>
+    <string name="sahha_principle_kiai_body">Wysiłek %1$s przekracza górę zakresu (%2$s). Jutro spodziewaj się niższego naładowania i odrób to długim snem.</string>
+    <string name="sahha_band_title">Twój zakres ±5 lat</string>
+    <string name="sahha_band_you_are">masz %1$s</string>
+    <string name="sahha_sleeping_hr">Tętno we śnie</string>
+    <string name="sahha_bpm">bpm</string>
+    <string name="sahha_sleeping_hr_normal">Zgodnie z ostatnimi nocami</string>
+    <string name="sahha_sleeping_hr_above">%1$s bpm powyżej ostatnich nocy</string>
+    <string name="sahha_sleeping_hr_below">%1$s bpm poniżej ostatnich nocy</string>
+    <string name="sahha_sleeping_hr_note">Średnia z głównego snu. Niższa niż zwykle oznacza, że dobrze się wyciszyłeś. Wyższa często pojawia się po alkoholu, późnym posiłku, chorobie lub ciężkim późnym treningu.</string>
+    <string name="sahha_checkin_title">Poranne pytanie</string>
+    <string name="sahha_checkin_reason">Ostatnia noc była niespokojna: tętno we śnie %1$s bpm powyżej normy.</string>
+    <string name="sahha_checkin_question">Czy piłeś wczoraj alkohol?</string>
+    <string name="sahha_yes">Tak</string>
+    <string name="sahha_no">Nie</string>
+    <string name="sahha_skip">Pomiń</string>
+    <string name="sahha_caffeine">Kofeina dziś</string>
+    <string name="sahha_caffeine_mg">%1$d mg</string>
+    <string name="sahha_caffeine_last">ostatnio o %1$s</string>
+    <string name="sahha_marishi">Marishi</string>
+    <string name="sahha_marishi_intro">Pytaj o własne liczby. Marishi odpowiada przez agenta rozmowy Home Assistant, na podstawie ostatnich 7 dni.</string>
+    <string name="sahha_marishi_hint">Zapytaj Marishi</string>
+    <string name="sahha_marishi_send">Wyślij</string>
+    <string name="sahha_marishi_thinking">Marishi myśli…</string>
+    <string name="sahha_marishi_not_configured">Marishi potrzebuje najpierw wysyłki do Home Assistant (Ustawienia › Własny serwer).</string>
+    <string name="sahha_marishi_no_agent">Wybierz agenta rozmowy Marishi w Home Assistant: NOOP Push Receiver › Konfiguruj.</string>
+    <string name="sahha_marishi_failed">Marishi nie mogła teraz odpowiedzieć. Spróbuj za chwilę.</string>
+    <string name="sahha_quests">Shugyō</string>
+    <string name="sahha_streak_rule">Dzień się liczy, gdy osiągnąłeś zakres wysiłku, odpocząłeś przy niskim naładowaniu albo spałeś 7 godzin.</string>
+    <string name="sahha_this_week">W tym tygodniu</string>
+    <string name="sahha_sparks">Iskry</string>
+    <string name="sahha_orb_tint">Kolor kuli</string>
+    <string name="sahha_quest_progress">%1$d z %2$d</string>
+    <string name="sahha_chest_locked">Skrzynia zamknięta</string>
+    <string name="sahha_chest_open">Otwórz skrzynię</string>
+    <string name="sahha_chest_opened">Skrzynia otwarta</string>
+    <plurals name="sahha_streak_days">
+        <item quantity="one">%d dzień z rzędu</item>
+        <item quantity="few">%d dni z rzędu</item>
+        <item quantity="many">%d dni z rzędu</item>
+        <item quantity="other">%d dnia z rzędu</item>
+    </plurals>
+    <plurals name="sahha_tint_unlock">
+        <item quantity="one">Każda skrzynia odblokowuje następny kolor kuli.</item>
+        <item quantity="few">Co %d skrzynie odblokowują następny kolor kuli.</item>
+        <item quantity="many">Co %d skrzyń odblokowuje następny kolor kuli.</item>
+        <item quantity="other">Co %d skrzyni odblokowuje następny kolor kuli.</item>
+    </plurals>
+    <plurals name="sahha_quest_train">
+        <item quantity="one">Trenuj %d raz</item>
+        <item quantity="few">Trenuj %d razy</item>
+        <item quantity="many">Trenuj %d razy</item>
+        <item quantity="other">Trenuj %d razy</item>
+    </plurals>
+    <plurals name="sahha_quest_hard_easy">
+        <item quantity="one">Po ciężkim dniu – lekki</item>
+        <item quantity="few">Po %d ciężkich dniach – lekkie</item>
+        <item quantity="many">Po %d ciężkich dniach – lekkie</item>
+        <item quantity="other">Po %d ciężkiego dnia – lekkie</item>
+    </plurals>
+    <plurals name="sahha_quest_sleep">
+        <item quantity="one">Śpij 7 godzin przez %d noc</item>
+        <item quantity="few">Śpij 7 godzin przez %d noce</item>
+        <item quantity="many">Śpij 7 godzin przez %d nocy</item>
+        <item quantity="other">Śpij 7 godzin przez %d nocy</item>
+    </plurals>
+    <plurals name="sahha_quest_steps">
+        <item quantity="one">Przejdź %1$s kroków przez %2$d dzień</item>
+        <item quantity="few">Przejdź %1$s kroków przez %2$d dni</item>
+        <item quantity="many">Przejdź %1$s kroków przez %2$d dni</item>
+        <item quantity="other">Przejdź %1$s kroków przez %2$d dnia</item>
+    </plurals>
+    <plurals name="sahha_sleeping_hr_building">
+        <item quantity="one">Jeszcze %d noc do ustalenia normy</item>
+        <item quantity="few">Jeszcze %d noce do ustalenia normy</item>
+        <item quantity="many">Jeszcze %d nocy do ustalenia normy</item>
+        <item quantity="other">Jeszcze %d nocy do ustalenia normy</item>
+    </plurals>
+    <plurals name="sahha_caffeine_drinks">
+        <item quantity="one">%d napój</item>
+        <item quantity="few">%d napoje</item>
+        <item quantity="many">%d napojów</item>
+        <item quantity="other">%d napoju</item>
+    </plurals>
 </resources>

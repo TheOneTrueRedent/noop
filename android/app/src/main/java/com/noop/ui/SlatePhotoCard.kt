@@ -84,7 +84,7 @@ data class SlatePhotoStats(
 
 /** The text the renderer draws, resolved by the caller so the canvas code stays locale-free. */
 private data class PhotoCardLabels(
-    val brand: String, val edition: String, val rest: String, val charge: String, val effort: String,
+    val brand: String, val rest: String, val charge: String, val effort: String,
     val footer: String,
 )
 
@@ -117,9 +117,10 @@ private fun decodePhoto(context: Context, uri: Uri): Bitmap? = runCatching {
 private fun renderPhotoCard(context: Context, photo: Bitmap?, s: SlatePhotoStats, l: PhotoCardLabels): Bitmap {
     val out = Bitmap.createBitmap(CARD_W, CARD_H, Bitmap.Config.ARGB_8888)
     val c = Canvas(out)
-    val textBold = ResourcesCompat.getFont(context, R.font.slate_text_bold) ?: Typeface.DEFAULT_BOLD
-    val textSemi = ResourcesCompat.getFont(context, R.font.slate_text_semibold) ?: Typeface.DEFAULT
-    val numBold = ResourcesCompat.getFont(context, R.font.slate_num_bold) ?: Typeface.DEFAULT_BOLD
+    val sage = SahhaLook.sage
+    val textBold = ResourcesCompat.getFont(context, if (sage) R.font.sage_text_bold else R.font.conq_text_semibold) ?: Typeface.DEFAULT_BOLD
+    val textSemi = ResourcesCompat.getFont(context, if (sage) R.font.sage_text_medium else R.font.conq_text_medium) ?: Typeface.DEFAULT
+    val numBold = ResourcesCompat.getFont(context, if (sage) R.font.sage_head_extrabold else R.font.conq_head_bold) ?: Typeface.DEFAULT_BOLD
     val w = CARD_W.toFloat()
     val h = CARD_H.toFloat()
 
@@ -150,13 +151,9 @@ private fun renderPhotoCard(context: Context, photo: Bitmap?, s: SlatePhotoStats
     val white = SlateUi.textPrimary.toArgb()
     val secondary = SlateUi.textSecondary.toArgb()
     val pad = 72f
-    // Wordmark and edition, top left; date, top right.
-    val brand = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = textBold; textSize = 60f; color = white; letterSpacing = 0.12f }
-    c.drawText(l.brand.uppercase(), pad, pad + 52f, brand)
-    val edition = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        typeface = textBold; textSize = 24f; color = SlateUi.brandRed.toArgb(); letterSpacing = 0.24f
-    }
-    c.drawText(l.edition.uppercase(), pad + 4f, pad + 92f, edition)
+    // Wordmark, top left (numeral face, as written: "Saħħa"); date, top right.
+    val brand = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = numBold; textSize = 64f; color = white }
+    c.drawText(l.brand, pad, pad + 54f, brand)
     val date = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         typeface = textSemi; textSize = 34f; color = white; textAlign = Paint.Align.RIGHT
     }
@@ -209,7 +206,6 @@ fun SlatePhotoCardDialog(stats: SlatePhotoStats, onDismiss: () -> Unit) {
     var card by remember { mutableStateOf<Bitmap?>(null) }
     val labels = PhotoCardLabels(
         brand = uiString(R.string.brand_name),
-        edition = uiString(R.string.brand_edition),
         rest = uiString(R.string.trends_rest),
         charge = uiString(R.string.trends_charge),
         effort = uiString(R.string.trends_effort),

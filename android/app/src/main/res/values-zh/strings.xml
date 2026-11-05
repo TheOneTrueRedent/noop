@@ -2955,8 +2955,8 @@
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
     <string name="sahha_date_of_birth">出生日期</string>
-    <string name="sahha_auto_track_title">自动记录步行和运动</string>
-    <string name="sahha_auto_track_detail">同步后，已结束的步行和跑步（来自手环的计步器）以及其他持续运动（来自心率）会自动保存为锻炼。每条都可以编辑、重命名或删除，删除的不会再次添加。仅在此手机上。</string>
+    <string name="sahha_auto_track_title">自动记录步行和跑步</string>
+    <string name="sahha_auto_track_detail">同步后，已结束的步行和跑步（来自手环的计步器）会自动保存为锻炼。每条都可以编辑、重命名或删除，删除的不会再次添加。仅在此手机上。</string>
     <string name="sahha_photo_card">照片卡片</string>
     <string name="sahha_photo_take">拍照</string>
     <string name="sahha_photo_choose">选择照片</string>
@@ -2966,4 +2966,86 @@
     <string name="sahha_photo_rhr">静息心率 %1$d</string>
     <string name="sahha_photo_hrv">心率变异性 %1$d 毫秒</string>
     <string name="sahha_photo_steps">%1$s 步</string>
+    <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
+    <string name="sahha_look_title">风格</string>
+    <string name="sahha_look_sage">贤者</string>
+    <string name="sahha_look_conqueror">征服者</string>
+    <string name="sahha_look_detail">两种深色风格，数字相同。贤者：玉绿与金色，沉静而强大。征服者：装甲般的紫色与绯红。</string>
+    <string name="sahha_form_seiza">Seiza</string>
+    <string name="sahha_form_shu">Shu</string>
+    <string name="sahha_form_ha">Ha</string>
+    <string name="sahha_form_mushin">Mushin</string>
+    <string name="sahha_form_kiai">Kiai</string>
+    <string name="sahha_form_kiai_range">爆发</string>
+    <string name="sahha_effort_to_go">还差一些</string>
+    <string name="sahha_effort_on_target">达标</string>
+    <string name="sahha_effort_above">超出区间</string>
+    <string name="sahha_principle_seiza_title">正座 · 静止</string>
+    <string name="sahha_principle_seiza_body">电量偏低。今天休息就是训练：轻松活动，早点睡。</string>
+    <string name="sahha_principle_shu_title">不动心 · 不动之心</string>
+    <string name="sahha_principle_shu_body">把运动量保持在 %1$s–%2$s 之间。稳扎稳打，不逞强。</string>
+    <string name="sahha_principle_ha_title">破 · 打破形</string>
+    <string name="sahha_principle_ha_body">今天有余力。把运动量推到 %1$s–%2$s 的上限。</string>
+    <string name="sahha_principle_mushin_title">无心 · 无念</string>
+    <string name="sahha_principle_mushin_body">电量和心率变异性都很高。一切就绪：好好利用。</string>
+    <string name="sahha_principle_kiai_title">气合 · 代价</string>
+    <string name="sahha_principle_kiai_body">运动量 %1$s 超过区间上限（%2$s）。明天电量会偏低，用一场长觉补回来。</string>
+    <string name="sahha_band_title">你的 ±5 年区间</string>
+    <string name="sahha_band_you_are">你 %1$s 岁</string>
+    <string name="sahha_sleeping_hr">睡眠心率</string>
+    <string name="sahha_bpm">次/分</string>
+    <string name="sahha_sleeping_hr_normal">与最近几晚持平</string>
+    <string name="sahha_sleeping_hr_above">比最近几晚高 %1$s 次/分</string>
+    <string name="sahha_sleeping_hr_below">比最近几晚低 %1$s 次/分</string>
+    <string name="sahha_sleeping_hr_note">主睡眠期间的平均心率。比平时低说明你放松得好；偏高往往出现在饮酒、晚餐过晚、生病或晚间高强度训练之后。</string>
+    <string name="sahha_checkin_title">晨间确认</string>
+    <string name="sahha_checkin_reason">昨晚身体比较“热”：睡眠心率比平常高 %1$s 次/分。</string>
+    <string name="sahha_checkin_question">你昨天喝酒了吗？</string>
+    <string name="sahha_yes">是</string>
+    <string name="sahha_no">否</string>
+    <string name="sahha_skip">跳过</string>
+    <string name="sahha_caffeine">今日咖啡因</string>
+    <string name="sahha_caffeine_mg">%1$d 毫克</string>
+    <string name="sahha_caffeine_last">最后一次 %1$s</string>
+    <string name="sahha_marishi">Marishi</string>
+    <string name="sahha_marishi_intro">询问你自己的数据。Marishi 通过 Home Assistant 的对话代理，根据你最近 7 天的数据回答。</string>
+    <string name="sahha_marishi_hint">问问 Marishi</string>
+    <string name="sahha_marishi_send">发送</string>
+    <string name="sahha_marishi_thinking">Marishi 正在思考…</string>
+    <string name="sahha_marishi_not_configured">Marishi 需要先设置向 Home Assistant 推送（设置 › 自托管推送）。</string>
+    <string name="sahha_marishi_no_agent">在 Home Assistant 中为 Marishi 选择对话代理：NOOP Push Receiver › 配置。</string>
+    <string name="sahha_marishi_failed">Marishi 暂时无法回答，请稍后再试。</string>
+    <string name="sahha_quests">Shugyō</string>
+    <string name="sahha_streak_rule">当天达到运动量区间、在低电量日好好休息，或睡满 7 小时，就算一天。</string>
+    <string name="sahha_this_week">本周</string>
+    <string name="sahha_sparks">火花</string>
+    <string name="sahha_orb_tint">光球颜色</string>
+    <string name="sahha_quest_progress">%1$d / %2$d</string>
+    <string name="sahha_chest_locked">宝箱未解锁</string>
+    <string name="sahha_chest_open">打开宝箱</string>
+    <string name="sahha_chest_opened">宝箱已打开</string>
+    <plurals name="sahha_streak_days">
+        <item quantity="other">连续 %d 天</item>
+    </plurals>
+    <plurals name="sahha_tint_unlock">
+        <item quantity="other">每 %d 个宝箱解锁下一种光球颜色。</item>
+    </plurals>
+    <plurals name="sahha_quest_train">
+        <item quantity="other">训练 %d 次</item>
+    </plurals>
+    <plurals name="sahha_quest_hard_easy">
+        <item quantity="other">%d 次在高强度日后安排轻松日</item>
+    </plurals>
+    <plurals name="sahha_quest_sleep">
+        <item quantity="other">%d 晚睡满 7 小时</item>
+    </plurals>
+    <plurals name="sahha_quest_steps">
+        <item quantity="other">%2$d 天走满 %1$s 步</item>
+    </plurals>
+    <plurals name="sahha_sleeping_hr_building">
+        <item quantity="other">还需 %d 晚来确定你的常态</item>
+    </plurals>
+    <plurals name="sahha_caffeine_drinks">
+        <item quantity="other">%d 杯</item>
+    </plurals>
 </resources>

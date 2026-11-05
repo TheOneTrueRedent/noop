@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -61,108 +62,143 @@ import com.noop.R
 
 // MARK: - Slate style (fork-only)
 //
-// Fonts, type scale, colour tokens and the small shared pieces of the Slate layout, matched to the four
-// reference screenshots the fork owner supplied (Home, Health, Health monitor, Recovery detail). Colours
-// were sampled from those screenshots. The fonts are open-licence stand-ins (see app/fonts-licenses):
-// Barlow for numerals, Figtree for text.
+// Fonts, type scale, colour tokens and the small shared pieces of the Slate layout. The layout was
+// matched to four reference screenshots the fork owner supplied (Home, Health, Health monitor, Recovery
+// detail); its fonts and colours now come from the chosen Saħħa look (SahhaLook.kt).
 
 object SlateFonts {
-    val text = FontFamily(
-        Font(R.font.slate_text_regular, FontWeight.Normal),
-        Font(R.font.slate_text_medium, FontWeight.Medium),
-        Font(R.font.slate_text_semibold, FontWeight.SemiBold),
-        Font(R.font.slate_text_bold, FontWeight.Bold),
+    // Fork-only (Saħħa): each look has a display face and a text face (OFL; see app/fonts-licenses).
+    // Sage: Shippori Mincho (display) + Zen Kaku Gothic New (text). Conqueror: Chakra Petch + Inter.
+    private val sageHead = FontFamily(
+        Font(R.font.sage_head_semibold, FontWeight.SemiBold),
+        Font(R.font.sage_head_extrabold, FontWeight.ExtraBold),
+        Font(R.font.sage_head_extrabold, FontWeight.Bold),
     )
-    val num = FontFamily(
-        Font(R.font.slate_num_medium, FontWeight.Medium),
-        Font(R.font.slate_num_semibold, FontWeight.SemiBold),
-        Font(R.font.slate_num_bold, FontWeight.Bold),
+    private val sageText = FontFamily(
+        Font(R.font.sage_text_regular, FontWeight.Normal),
+        Font(R.font.sage_text_medium, FontWeight.Medium),
+        Font(R.font.sage_text_medium, FontWeight.SemiBold),
+        Font(R.font.sage_text_bold, FontWeight.Bold),
     )
+    private val conqHead = FontFamily(
+        Font(R.font.conq_head_semibold, FontWeight.SemiBold),
+        Font(R.font.conq_head_bold, FontWeight.Bold),
+    )
+    private val conqText = FontFamily(
+        Font(R.font.conq_text_regular, FontWeight.Normal),
+        Font(R.font.conq_text_medium, FontWeight.Medium),
+        Font(R.font.conq_text_semibold, FontWeight.SemiBold),
+        Font(R.font.conq_text_semibold, FontWeight.Bold),
+    )
+
+    /** Display face: titles, section heads, numerals. */
+    val head: FontFamily get() = if (SahhaLook.sage) sageHead else conqHead
+
+    /** Text face: body copy, captions, chips. */
+    val text: FontFamily get() = if (SahhaLook.sage) sageText else conqText
+
+    /** Numerals use the display face in both looks. */
+    val num: FontFamily get() = head
 }
 
 object SlateType {
-    private val text = SlateFonts.text
+    private val text get() = SlateFonts.text
+    private val head get() = SlateFonts.head
 
     /** Centred screen titles: "HEALTH MONITOR", "TUE, 27 OCT". */
-    val screenTitle = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 2.6.sp)
+    val screenTitle: TextStyle get() = TextStyle(fontFamily = head, fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 2.6.sp)
 
     /** Section headers: "FITNESS AGE", "HEART RATE", "ACTIVITIES". */
-    val sectionCaps = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 15.sp, letterSpacing = 2.4.sp)
+    val sectionCaps: TextStyle get() = TextStyle(fontFamily = head, fontWeight = FontWeight.Bold, fontSize = 15.sp, letterSpacing = 2.4.sp)
 
     /** Tile and row titles: "RESPIRATORY RATE", "HEART RATE VARIABILITY". */
-    val cardCaps = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 13.sp, letterSpacing = 1.4.sp)
+    val cardCaps: TextStyle get() = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 13.sp, letterSpacing = 1.4.sp)
 
     /** Dial labels and small caps: "RECOVERY ›", "BPM", "AGE IMPACT". */
-    val labelCaps = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.6.sp)
+    val labelCaps: TextStyle get() = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.6.sp)
 
-    val heading = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 28.sp)
-    val sectionTitle = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 22.sp)
-    val cardTitle = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-    val body = TextStyle(fontFamily = text, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 22.sp)
-    val bodySmall = TextStyle(fontFamily = text, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, lineHeight = 18.sp)
-    val value = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 19.sp)
-    val unit = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 17.sp)
-    val chip = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 13.sp)
-    val tab = TextStyle(fontFamily = text, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
+    val heading: TextStyle get() = TextStyle(fontFamily = head, fontWeight = FontWeight.Bold, fontSize = 28.sp)
+    val sectionTitle: TextStyle get() = TextStyle(fontFamily = head, fontWeight = FontWeight.Bold, fontSize = 22.sp)
+    val cardTitle: TextStyle get() = TextStyle(fontFamily = head, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+    val body: TextStyle get() = TextStyle(fontFamily = text, fontWeight = FontWeight.Medium, fontSize = 15.sp, lineHeight = 22.sp)
+    val bodySmall: TextStyle get() = TextStyle(fontFamily = text, fontWeight = FontWeight.Medium, fontSize = 13.sp, lineHeight = 18.sp)
+    val value: TextStyle get() = TextStyle(fontFamily = head, fontWeight = FontWeight.Bold, fontSize = 19.sp)
+    val unit: TextStyle get() = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+    val chip: TextStyle get() = TextStyle(fontFamily = text, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+    val tab: TextStyle get() = TextStyle(fontFamily = text, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
 
-    /** Big numerals (DIN-style): dial values, "94", "28.9". */
+    /** Big numerals: dial values, "94", "28.9". */
     fun num(size: TextUnit): TextStyle =
         TextStyle(fontFamily = SlateFonts.num, fontWeight = FontWeight.Bold, fontSize = size, letterSpacing = (-0.3).sp)
 }
 
-/** Slate-only colour tokens, sampled from the reference screenshots. Chrome only; data colours (the
+/** Slate-layout colour tokens, one set per Saħħa look (dark only). Chrome only; data colours (the
  *  recovery ramp) still come from [Palette]. */
 object SlateUi {
-    val bgTop = Color(0xFF273238)
-    val bgMid = Color(0xFF141A1F)
-    val bgBottom = Color(0xFF101418)
-    val card = Color(0xFF2D3337)
-    val cardBlue = Color(0xFF252F36)
-    val raised = Color(0xFF41474B)
-    val track = Color(0xFF394247)
-    val gridLine = Color(0xFF222C32)
-    val panel = Color(0xFF1B272E)
-    val alertCard = Color(0xFF141720)
-    val alertBorder = Color(0xFF222735)
-    val alertBadge = Color(0xFF2E3443)
-    val textPrimary = Color(0xFFFFFFFF)
-    val textSecondary = Color(0xFFB0B5BA)
-    val textTertiary = Color(0xFF7E868C)
-    val link = Color(0xFF3299DD)
-    val deltaBlue = Color(0xFF62C3F2)
-    val sleepBlue = Color(0xFF6D97B1)
-    val strainBlue = Color(0xFF008ADF)
-    val heartBlue = Color(0xFF3299DD)
-    val positive = Color(0xFF00D7A1)
-    val positiveBg = Color(0xFF274A46)
-    val warning = Color(0xFFF5A623)
-    val warningBg = Color(0xFF4B4333)
-    val neutralBg = Color(0xFF393F43)
-    val neutralText = Color(0xFF9AA0A5)
-    val flame = Color(0xFFF26B21)
+    /** Each token resolves per look (a state read, so the Slate screens recompose when the look changes). */
+    private fun pick(sage: Color, conqueror: Color): Color = if (SahhaLook.sage) sage else conqueror
 
-    /** Fork-only: the Saħħa [Red Edition] brand red (edition label, launcher ring, photo card). */
+    val bgTop: Color get() = pick(Color(0xFF0B3A2C), Color(0xFF1A1233))
+    val bgMid: Color get() = pick(Color(0xFF07110F), Color(0xFF0B0912))
+    val bgBottom: Color get() = pick(Color(0xFF040807), Color(0xFF07060C))
+    val card: Color get() = pick(Color(0xFF0F1E1A), Color(0xFF17131F))
+    val cardBlue: Color get() = pick(Color(0xFF10221D), Color(0xFF1A1525))
+    val raised: Color get() = pick(Color(0xFF1A2E28), Color(0xFF241E33))
+    val track: Color get() = pick(Color(0xFF1E332C), Color(0xFF2A2340))
+    val gridLine: Color get() = pick(Color(0xFF13231E), Color(0xFF1C1729))
+    val panel: Color get() = pick(Color(0xFF0B1714), Color(0xFF120F1A))
+    val alertCard: Color get() = pick(Color(0xFF0F1E1A), Color(0xFF17131F))
+    val alertBorder: Color get() = pick(Color(0xFF214037), Color(0xFF2C2542))
+    val alertBadge: Color get() = pick(Color(0xFF1A2E28), Color(0xFF241E33))
+    val textPrimary: Color get() = pick(Color(0xFFF3F1E6), Color(0xFFF2EEFF))
+    val textSecondary: Color get() = pick(Color(0xFFA9B8B0), Color(0xFFA49DBC))
+    val textTertiary: Color get() = pick(Color(0xFF7F928A), Color(0xFF857E9F))
+    val link: Color get() = pick(Color(0xFF3BF0B0), Color(0xFFB09AFF))
+    val deltaBlue: Color get() = pick(Color(0xFF3BF0B0), Color(0xFFB9A2FF))
+    val sleepBlue: Color get() = pick(Color(0xFF9FB4FF), Color(0xFF8F8DF2))
+    val strainBlue: Color get() = pick(Color(0xFFFFC940), Color(0xFF9B7BFF))
+    val heartBlue: Color get() = pick(Color(0xFF3BF0B0), Color(0xFFF0566B))
+    val positive: Color get() = pick(Color(0xFF3BF0B0), Color(0xFF4FE3B0))
+    val positiveBg: Color get() = pick(Color(0xFF133A2E), Color(0xFF1D3330))
+    val warning: Color get() = pick(Color(0xFFFFC940), Color(0xFFFFB44A))
+    val warningBg: Color get() = pick(Color(0xFF3A2F12), Color(0xFF3A2A15))
+    val neutralBg: Color get() = pick(Color(0xFF1A2E28), Color(0xFF241E33))
+    val neutralText: Color get() = pick(Color(0xFFA9B8B0), Color(0xFFA49DBC))
+    val flame: Color get() = pick(Color(0xFFFF9F45), Color(0xFFFF9A4A))
+
+    /** The look's main energy colour: jade (Sage) or violet (Conqueror). */
+    val energy: Color get() = pick(Color(0xFF3BF0B0), Color(0xFF9B7BFF))
+
+    /** The look's second accent: gold (Sage) or crimson (Conqueror). */
+    val accent: Color get() = pick(Color(0xFFFFC940), Color(0xFFF0566B))
+
+    /** The Kiai surge red, the same in both looks. */
+    val surge = Color(0xFFFF4A3D)
+
+    /** Fork-only: the Saħħa brand red (launcher ring, photo card). */
     val brandRed = Color(0xFFE5484D)
     val outlookWarm = Color(0xFF8B7B64)
     val outlookCool = Color(0xFF324A56)
-    val tabBar = Color(0xFF2B373E)
-    val tabInactive = Color(0xFF8A949A)
-    val coachCore = Color(0xFF19303A)
-    val coachRimA = Color(0xFF6C5CE7)
-    val coachRimB = Color(0xFF2E86DE)
-    val orbCore = Color(0xFF0D1012)
-    val orbBody = Color(0xFF604727)
-    val orbRim = Color(0xFFE8C79A)
-    val orbSpark = Color(0xFFF6D6A4)
+    val tabBar: Color get() = pick(Color(0xFF0A1613), Color(0xFF17131F))
+    val tabInactive: Color get() = pick(Color(0xFF8FA39A), Color(0xFF8A83A3))
+    val coachCore: Color get() = pick(Color(0xFF0E2A22), Color(0xFF1C1530))
+    val coachRimA: Color get() = pick(Color(0xFF3BF0B0), Color(0xFF9B7BFF))
+    val coachRimB: Color get() = pick(Color(0xFFFFC940), Color(0xFFF0566B))
+    val orbCore: Color get() = pick(Color(0xFF06120D), Color(0xFF0B0912))
+    val orbBody: Color get() = pick(Color(0xFF1C6B47), Color(0xFF3C2A7A))
+    val orbRim: Color get() = pick(Color(0xFFFFC940), Color(0xFFB9A2FF))
+    val orbSpark: Color get() = pick(Color(0xFFFFE7A0), Color(0xFFE3D9FF))
+    val orbMid: Color get() = pick(Color(0xFF0A2318), Color(0xFF1A1230))
+    val orbEdge: Color get() = pick(Color(0xFF2FBF7E), Color(0xFF7B5CF0))
 
-    /** The twelve-step factor bar ramp, worst (left) to best (right), as sampled. */
+/** The twelve-step factor bar ramp, worst (left) to best (right), as sampled. */
     val factorRamp: List<Color> = listOf(
         Color(0xFFF59D1D), Color(0xFFE3962A), Color(0xFFCF8E33), Color(0xFFB4813A), Color(0xFF9C753A),
         Color(0xFF7F7A55), Color(0xFF5F8263), Color(0xFF3E8C6B), Color(0xFF1FA37C), Color(0xFF09BD8F),
         Color(0xFF12C995), Color(0xFF629E94),
     )
 
-    val background: Brush = Brush.verticalGradient(
+    val background: Brush get() = Brush.verticalGradient(
         0f to bgTop, 0.32f to bgMid, 1f to bgBottom,
     )
 }
@@ -199,8 +235,8 @@ internal fun SlateSurface(
     Column(
         modifier
             .fillMaxWidth()
-            .clip(shape)
-            .background(color, shape)
+            // Fork-only (Saħħa): cards carry a hairline edge in the look's colours.
+            .clip(shape).background(color, shape).border(1.dp, SlateUi.alertBorder, shape)
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(padding),
         content = content,
@@ -279,7 +315,7 @@ internal fun SlateScreen(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val statusTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-    Box(Modifier.fillMaxSize().background(SlateUi.background)) {
+    SlateBackdrop {
         Column(
             Modifier.fillMaxSize().verticalScroll(rememberScrollState())
                 .padding(top = statusTop + 6.dp, bottom = SLATE_BAR_CLEARANCE),

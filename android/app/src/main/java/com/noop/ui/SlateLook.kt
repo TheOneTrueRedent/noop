@@ -17,24 +17,44 @@ import org.json.JSONObject
 // exactly, so it is fully switchable. Data colour worlds (recovery / strain / sleep / zones) are the
 // DarkTokens ones untouched — only the surfaces and chrome text move.
 
-/** DarkTokens with the Slate reference surfaces (neutral charcoal cards on a near-black canvas, sampled
- *  from the fork owner's screenshots). Only surface / hairline / text / hero tokens differ. */
+/** Fork-only (Saħħa): DarkTokens with the Conqueror surfaces (violet-black armour), used by the non-Slate
+ *  screens (Settings, Sleep, Trends…) while the Conqueror look is on. */
 val SlateTokens: PaletteTokens = DarkTokens.copy(
-    surfaceBase = Color(0xFF141A1F),
-    surfaceRaised = Color(0xFF2D3337),
-    surfaceOverlay = Color(0xFF252F36),
-    surfaceInset = Color(0xFF393F43),
-    hairline = Color(0xFF353C41),
-    hairlineStrong = Color(0xFF41474B),
-    textPrimary = Color(0xFFFFFFFF),
-    textSecondary = Color(0xFFB0B5BA),
-    textTertiary = Color(0xFF7E868C),
-    scenicCenter = Color(0xFF1E262B),
-    scenicEdge = Color(0xFF141A1F),
-    cardFillTop = Color(0xFF2F3539),
-    cardFillBottom = Color(0xFF2A3034),
-    heroFill = Color(0xFF1E262B),
-    heroBorder = Color(0x14FFFFFF),
+    surfaceBase = Color(0xFF0B0912),
+    surfaceRaised = Color(0xFF17131F),
+    surfaceOverlay = Color(0xFF1A1525),
+    surfaceInset = Color(0xFF241E33),
+    hairline = Color(0xFF2C2542),
+    hairlineStrong = Color(0xFF3A3156),
+    textPrimary = Color(0xFFF2EEFF),
+    textSecondary = Color(0xFFA49DBC),
+    textTertiary = Color(0xFF857E9F),
+    scenicCenter = Color(0xFF1A1233),
+    scenicEdge = Color(0xFF0B0912),
+    cardFillTop = Color(0xFF1A1525),
+    cardFillBottom = Color(0xFF17131F),
+    heroFill = Color(0xFF15102A),
+    heroBorder = Color(0x1A9B7BFF),
+)
+
+/** Fork-only (Saħħa): DarkTokens with the Sage surfaces (deep night-green), for the non-Slate screens
+ *  while the Sage look is on. */
+val SageTokens: PaletteTokens = DarkTokens.copy(
+    surfaceBase = Color(0xFF07110F),
+    surfaceRaised = Color(0xFF0F1E1A),
+    surfaceOverlay = Color(0xFF10221D),
+    surfaceInset = Color(0xFF1A2E28),
+    hairline = Color(0xFF214037),
+    hairlineStrong = Color(0xFF2C5245),
+    textPrimary = Color(0xFFF3F1E6),
+    textSecondary = Color(0xFFA9B8B0),
+    textTertiary = Color(0xFF7F928A),
+    scenicCenter = Color(0xFF0B3A2C),
+    scenicEdge = Color(0xFF07110F),
+    cardFillTop = Color(0xFF10221D),
+    cardFillBottom = Color(0xFF0F1E1A),
+    heroFill = Color(0xFF0B2A21),
+    heroBorder = Color(0x1A3BF0B0),
 )
 
 /** The prefs the Slate look sets, captured so switching it off puts every one back. */
@@ -92,6 +112,7 @@ object SlateLook {
     fun tokensFor(dark: Boolean, slate: Boolean = enabled): PaletteTokens =
         when {
             !dark -> LightTokens
+            slate && SahhaLook.sage -> SageTokens
             slate -> SlateTokens
             else -> DarkTokens
         }

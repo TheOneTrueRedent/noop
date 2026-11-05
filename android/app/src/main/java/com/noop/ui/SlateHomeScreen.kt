@@ -33,7 +33,9 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Bedtime
+import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -190,12 +192,18 @@ fun SlateHomeScreen(
     onOpenDetail: (kind: String, day: String) -> Unit,
     onOpenHealthMonitor: () -> Unit,
     onOpenDevices: () -> Unit,
+    onOpenQuests: () -> Unit = {},
+    onOpenMarishi: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val today by vm.today.collectAsStateWithLifecycle()
     val days by vm.recentDays.collectAsStateWithLifecycle()
     val chargeBaselines by vm.chargeBaselines.collectAsStateWithLifecycle()
-    val streaks by vm.streaks.collectAsStateWithLifecycle()
+    // Fork-only (Saħħa): the header flame shows the same rest-aware streak the Quests screen does, so the
+    // two readouts of "your streak" cannot disagree (upstream's Charge-score streak is not shown here).
+    var questDays by remember { mutableStateOf<List<com.noop.sahha.QuestEngine.Day>>(emptyList()) }
+    LaunchedEffect(days) { questDays = loadQuestDays(vm) }
+    val streaks = remember(questDays) { sahhaStreak(questDays, LocalDate.now()) }
     val live by vm.live.collectAsStateWithLifecycle()
     val is24h = remember { ClockPrefs.uses24Hour(context) }
     val effortScale = remember { UnitPrefs.effortScale(context) }
@@ -320,7 +328,7 @@ fun SlateHomeScreen(
     val pinThresholdPx = with(density) { 260.dp.toPx() }
     val statusTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
 
-    Box(Modifier.fillMaxSize().background(SlateUi.background)) {
+    SlateBackdrop {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -340,10 +348,13 @@ fun SlateHomeScreen(
                     ProfileAvatar(size = 40.dp, contentDescription = uiString(R.string.slate_open_settings))
                     if (streaks.current > 0) {
                         Spacer(Modifier.width(6.dp))
-                        Icon(Icons.Filled.LocalFireDepartment,
-                            contentDescription = uiPlural(R.plurals.slate_streak_days, streaks.current, streaks.current),
-                            tint = SlateUi.flame, modifier = Modifier.size(22.dp))
-                        Text(streaks.current.toString(), style = SlateType.chip, color = SlateUi.textPrimary)
+                        // Fork-only (Saħħa): the flame opens Quests.
+                        Row(Modifier.clickable(onClick = onOpenQuests), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Filled.LocalFireDepartment,
+                                contentDescription = uiPlural(R.plurals.slate_streak_days, streaks.current, streaks.current),
+                                tint = SlateUi.flame, modifier = Modifier.size(22.dp))
+                            Text(streaks.current.toString(), style = SlateType.chip, color = SlateUi.textPrimary)
+                        }
                     }
                 }
                 SlateDatePill(
@@ -367,46 +378,73 @@ fun SlateHomeScreen(
                 )
             }
 
-            Column(Modifier.align(Alignment.CenterHorizontally), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    uiString(R.string.brand_name).uppercase(),
-                    style = SlateType.heading.copy(letterSpacing = 3.sp),
-                    color = SlateUi.textPrimary,
-                )
-                Text(
-                    uiString(R.string.brand_edition).uppercase(),
-                    style = SlateType.labelCaps.copy(fontSize = 10.sp, letterSpacing = 2.4.sp),
-                    color = SlateUi.brandRed,
-                )
-            }
+            // Fork-only (Saħħa): the wordmark, as written.
+            Text(
+                uiString(R.string.brand_name),
+                style = SlateType.heading.copy(fontSize = 30.sp),
+                color = SlateUi.textPrimary,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            )
 
-            // The three dials.
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                SlateDial(
-                    label = uiString(R.string.trends_rest),
-                    value = rest?.roundToInt()?.toString(),
-                    percent = true,
-                    fraction = (rest ?: 0.0) / 100.0,
-                    color = SlateUi.sleepBlue,
-                    onClick = { onOpenDetail("rest", rowKey) },
-                )
-                SlateDial(
-                    label = uiString(R.string.trends_charge),
-                    value = charge?.roundToInt()?.toString(),
-                    percent = true,
-                    pending = charge == null && calibrationNights != null,
-                    fraction = (charge ?: 0.0) / 100.0,
-                    color = charge?.let { Palette.recoveryColor(it) } ?: DomainTheme.Charge.color,
-                    onClick = { onOpenDetail("charge", rowKey) },
-                )
-                SlateDial(
-                    label = uiString(R.string.trends_effort),
-                    value = effort?.let { String.format(Locale.getDefault(), "%.1f", it) },
-                    percent = false,
-                    fraction = (effort ?: 0.0) / effortMax,
-                    color = SlateUi.strainBlue,
-                    onClick = { onOpenDetail("effort", rowKey) },
-                )
+            // Fork-only (Saħħa): the day's form, the orb, and the Kiai surge when Effort is past the band.
+            val effort21 = effortRaw?.let { UnitFormatter.effortValue(it, EffortScale.WHOOP) }
+            val band = optimalStrainRange(charge)
+            val surge = isToday && com.noop.sahha.SahhaForm.surging(effort21, band?.high)
+            val hrvHistory = remember(days, rowKey) {
+                days.filter { it.day < rowKey }.takeLast(30).mapNotNull { it.avgHrv }
+            }
+            val form = com.noop.sahha.SahhaForm.of(charge, row?.avgHrv, hrvHistory)
+            SahhaTodayOrb(
+                faces = listOf(
+                    SahhaOrbFace(uiString(R.string.trends_charge), charge?.roundToInt()?.let { slatePercentText(it) },
+                        (charge ?: 0.0) / 100.0) { onOpenDetail("charge", rowKey) },
+                    SahhaOrbFace(uiString(R.string.trends_rest), rest?.roundToInt()?.let { slatePercentText(it) },
+                        (rest ?: 0.0) / 100.0) { onOpenDetail("rest", rowKey) },
+                    SahhaOrbFace(uiString(R.string.trends_effort), effort?.let { String.format(Locale.getDefault(), "%.1f", it) },
+                        (effort ?: 0.0) / effortMax) { onOpenDetail("effort", rowKey) },
+                ),
+                surge = surge,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            )
+            SahhaFormLadder(form, surge)
+            if (SahhaLook.sage) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    SahhaPill(
+                        icon = Icons.Filled.Bedtime, badge = SlateUi.sleepBlue,
+                        value = sahhaSleepText(row?.totalSleepMin) ?: "–",
+                        caption = uiString(R.string.nav_sleep),
+                        fraction = rest?.let { it / 100.0 },
+                        onClick = { onOpenDetail("rest", rowKey) },
+                        modifier = Modifier.weight(1f),
+                    )
+                    SahhaPill(
+                        icon = Icons.Filled.Bolt, badge = if (surge) SlateUi.surge else SlateUi.strainBlue,
+                        value = effort?.let { String.format(Locale.getDefault(), "%.1f", it) } ?: "–",
+                        caption = sahhaEffortCaption(
+                            effort21, charge,
+                            toGo = uiString(R.string.sahha_effort_to_go),
+                            onTarget = uiString(R.string.sahha_effort_on_target),
+                            above = uiString(R.string.sahha_effort_above),
+                        ) ?: uiString(R.string.trends_effort),
+                        fraction = effort21?.let { e -> band?.let { (e / it.high).coerceAtMost(1.0) } },
+                        onClick = { onOpenDetail("effort", rowKey) },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+            } else {
+                Column(Modifier.fillMaxWidth()) {
+                    SahhaReadoutBar(uiString(R.string.trends_rest), rest?.roundToInt()?.let { slatePercentText(it) } ?: "–",
+                        (rest ?: 0.0) / 100.0, SlateUi.energy) { onOpenDetail("rest", rowKey) }
+                    SahhaReadoutBar(uiString(R.string.trends_charge), charge?.roundToInt()?.let { slatePercentText(it) } ?: "–",
+                        (charge ?: 0.0) / 100.0, SlateUi.energy) { onOpenDetail("charge", rowKey) }
+                    SahhaReadoutBar(uiString(R.string.trends_effort), effort?.let { String.format(Locale.getDefault(), "%.1f", it) } ?: "–",
+                        (effort ?: 0.0) / effortMax, if (surge) SlateUi.surge else SlateUi.accent) { onOpenDetail("effort", rowKey) }
+                }
+            }
+            if (isToday) SahhaPrincipleCard(form, surge, effort21, charge)
+            if (isToday) {
+                SahhaAlcoholCheckIn(vm, night)
+                SahhaCaffeineCard()
             }
 
             if (isToday && !calibration.stableReady) SlateCalibrationCard(calibration)
@@ -477,6 +515,8 @@ fun SlateHomeScreen(
                         SlateJournalWeek(journal, onOpenJournal)
                         SlateWideButton(Icons.Filled.Lightbulb, uiString(R.string.slate_behaviour_insights), onOpenInsights)
                         SlateWideButton(Icons.Filled.PhotoCamera, uiString(R.string.sahha_photo_card)) { photoCardOpen = true }
+                        SlateWideButton(Icons.Filled.LocalFireDepartment, uiString(R.string.sahha_quests), onOpenQuests)
+                        SlateWideButton(Icons.Filled.AutoAwesome, uiString(R.string.sahha_marishi), onOpenMarishi)
                     }
                 }
             }

@@ -647,6 +647,8 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
                             onOpenDetail = { kind, day -> nav.navigate(slateDetailRoute(kind, day)) },
                             onOpenHealthMonitor = { nav.navigate(SLATE_HEALTH_MONITOR_ROUTE) },
                             onOpenDevices = { nav.navigateTopLevel(Destination.Devices.route) },
+                            onOpenQuests = { nav.navigate(SAHHA_QUESTS_ROUTE) },
+                            onOpenMarishi = { nav.navigate(SAHHA_MARISHI_ROUTE) },
                         )
                         return@composable
                     }
@@ -722,6 +724,9 @@ fun AppRoot(viewModel: AppViewModel = viewModel()) {
                         onOpenSettings = { nav.navigateTopLevel(Destination.Settings.route) },
                     )
                 }
+                // Fork-only (Saħħa): quests, the rest-aware streak and chests; Marishi, the HA-backed assistant.
+                composable(SAHHA_QUESTS_ROUTE) { SahhaQuestsScreen(vm = viewModel, onBack = { nav.popBackStack() }) }
+                composable(SAHHA_MARISHI_ROUTE) { SahhaMarishiScreen(vm = viewModel, onBack = { nav.popBackStack() }) }
                 composable(SLATE_HEALTH_MONITOR_ROUTE) {
                     SlateHealthMonitorScreen(
                         vm = viewModel,

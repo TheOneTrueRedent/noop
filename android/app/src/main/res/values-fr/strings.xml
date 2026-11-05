@@ -2989,8 +2989,8 @@
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
     <string name="sahha_date_of_birth">Date de naissance</string>
-    <string name="sahha_auto_track_title">Suivre automatiquement marches et exercice</string>
-    <string name="sahha_auto_track_detail">Après une synchronisation, les marches et courses terminées (d’après le podomètre de ton bracelet) et les autres efforts soutenus (d’après la fréquence cardiaque) sont enregistrés tout seuls comme séances. Chacune peut être modifiée, renommée ou supprimée, et une séance supprimée n’est pas ajoutée à nouveau. Sur ce téléphone uniquement.</string>
+    <string name="sahha_auto_track_title">Suivre automatiquement marches et courses</string>
+    <string name="sahha_auto_track_detail">Après une synchronisation, les marches et courses terminées (d’après le podomètre de ton bracelet) sont enregistrées toutes seules comme séances. Chacune peut être modifiée, renommée ou supprimée, et une séance supprimée n’est pas ajoutée à nouveau. Sur ce téléphone uniquement.</string>
     <string name="sahha_photo_card">Carte photo</string>
     <string name="sahha_photo_take">Prendre une photo</string>
     <string name="sahha_photo_choose">Choisir une photo</string>
@@ -3000,4 +3000,94 @@
     <string name="sahha_photo_rhr">FC repos %1$d</string>
     <string name="sahha_photo_hrv">VFC %1$d ms</string>
     <string name="sahha_photo_steps">%1$s pas</string>
+    <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
+    <string name="sahha_look_title">Style</string>
+    <string name="sahha_look_sage">Sage</string>
+    <string name="sahha_look_conqueror">Conquérant</string>
+    <string name="sahha_look_detail">Deux styles sombres, mêmes chiffres. Sage : jade et or, calme mais puissant. Conquérant : violet et cramoisi en armure.</string>
+    <string name="sahha_form_seiza">Seiza</string>
+    <string name="sahha_form_shu">Shu</string>
+    <string name="sahha_form_ha">Ha</string>
+    <string name="sahha_form_mushin">Mushin</string>
+    <string name="sahha_form_kiai">Kiai</string>
+    <string name="sahha_form_kiai_range">élan</string>
+    <string name="sahha_effort_to_go">À faire</string>
+    <string name="sahha_effort_on_target">Dans la cible</string>
+    <string name="sahha_effort_above">Au-delà de ta plage</string>
+    <string name="sahha_principle_seiza_title">Seiza · immobilité</string>
+    <string name="sahha_principle_seiza_body">La charge est basse. Aujourd’hui, le repos est l’entraînement : bouger en douceur et se coucher tôt.</string>
+    <string name="sahha_principle_shu_title">Fudōshin · l’esprit inébranlable</string>
+    <string name="sahha_principle_shu_body">Garde l’effort entre %1$s et %2$s. Un travail régulier, rien d’héroïque.</string>
+    <string name="sahha_principle_ha_title">Ha · briser la forme</string>
+    <string name="sahha_principle_ha_body">Tu as de la marge aujourd’hui. Pousse l’effort vers le haut de %1$s–%2$s.</string>
+    <string name="sahha_principle_mushin_title">Mushin · non-esprit</string>
+    <string name="sahha_principle_mushin_body">La charge et la VFC sont hautes. Tout s’aligne : profites-en.</string>
+    <string name="sahha_principle_kiai_title">Kiai · le prix</string>
+    <string name="sahha_principle_kiai_body">L’effort %1$s dépasse le haut de ta plage (%2$s). Attends-toi à moins de charge demain et compense avec une longue nuit.</string>
+    <string name="sahha_band_title">Ta plage de ±5 ans</string>
+    <string name="sahha_band_you_are">tu as %1$s</string>
+    <string name="sahha_sleeping_hr">Fréquence cardiaque de sommeil</string>
+    <string name="sahha_bpm">bpm</string>
+    <string name="sahha_sleeping_hr_normal">Dans la ligne de tes dernières nuits</string>
+    <string name="sahha_sleeping_hr_above">%1$s bpm au-dessus de tes dernières nuits</string>
+    <string name="sahha_sleeping_hr_below">%1$s bpm en dessous de tes dernières nuits</string>
+    <string name="sahha_sleeping_hr_note">Moyenne sur le sommeil principal. Plus basse que d’habitude : tu t’es bien posé. Plus haute : souvent après de l’alcool, un repas tardif, une maladie ou une séance dure en soirée.</string>
+    <string name="sahha_checkin_title">Point du matin</string>
+    <string name="sahha_checkin_reason">La nuit a été agitée : fréquence cardiaque de sommeil %1$s bpm au-dessus de ta normale.</string>
+    <string name="sahha_checkin_question">As-tu bu de l’alcool hier ?</string>
+    <string name="sahha_yes">Oui</string>
+    <string name="sahha_no">Non</string>
+    <string name="sahha_skip">Passer</string>
+    <string name="sahha_caffeine">Caféine aujourd’hui</string>
+    <string name="sahha_caffeine_mg">%1$d mg</string>
+    <string name="sahha_caffeine_last">dernière à %1$s</string>
+    <string name="sahha_marishi">Marishi</string>
+    <string name="sahha_marishi_intro">Pose des questions sur tes propres chiffres. Marishi répond via l’agent de conversation de Home Assistant, à partir de tes 7 derniers jours.</string>
+    <string name="sahha_marishi_hint">Demande à Marishi</string>
+    <string name="sahha_marishi_send">Envoyer</string>
+    <string name="sahha_marishi_thinking">Marishi réfléchit…</string>
+    <string name="sahha_marishi_not_configured">Marishi a d’abord besoin de l’envoi vers Home Assistant (Réglages › Envoi auto-hébergé).</string>
+    <string name="sahha_marishi_no_agent">Choisis l’agent de conversation de Marishi dans Home Assistant : NOOP Push Receiver › Configurer.</string>
+    <string name="sahha_marishi_failed">Marishi n’a pas pu répondre. Réessaie dans un instant.</string>
+    <string name="sahha_quests">Shugyō</string>
+    <string name="sahha_streak_rule">Une journée compte si tu as atteint ta plage d’effort, récupéré un jour de charge basse ou dormi 7 heures.</string>
+    <string name="sahha_this_week">Cette semaine</string>
+    <string name="sahha_sparks">Étincelles</string>
+    <string name="sahha_orb_tint">Couleur de l’orbe</string>
+    <string name="sahha_quest_progress">%1$d sur %2$d</string>
+    <string name="sahha_chest_locked">Coffre verrouillé</string>
+    <string name="sahha_chest_open">Ouvrir le coffre</string>
+    <string name="sahha_chest_opened">Coffre ouvert</string>
+    <plurals name="sahha_streak_days">
+        <item quantity="one">%d jour d’affilée</item>
+        <item quantity="other">%d jours d’affilée</item>
+    </plurals>
+    <plurals name="sahha_tint_unlock">
+        <item quantity="one">Chaque coffre débloque la couleur d’orbe suivante.</item>
+        <item quantity="other">Tous les %d coffres débloquent la couleur d’orbe suivante.</item>
+    </plurals>
+    <plurals name="sahha_quest_train">
+        <item quantity="one">S’entraîner %d fois</item>
+        <item quantity="other">S’entraîner %d fois</item>
+    </plurals>
+    <plurals name="sahha_quest_hard_easy">
+        <item quantity="one">Faire suivre une journée dure d’une journée facile</item>
+        <item quantity="other">Faire suivre %d journées dures de journées faciles</item>
+    </plurals>
+    <plurals name="sahha_quest_sleep">
+        <item quantity="one">Dormir 7 heures %d nuit</item>
+        <item quantity="other">Dormir 7 heures %d nuits</item>
+    </plurals>
+    <plurals name="sahha_quest_steps">
+        <item quantity="one">Marcher %1$s pas %2$d jour</item>
+        <item quantity="other">Marcher %1$s pas %2$d jours</item>
+    </plurals>
+    <plurals name="sahha_sleeping_hr_building">
+        <item quantity="one">Encore %d nuit pour établir ta normale</item>
+        <item quantity="other">Encore %d nuits pour établir ta normale</item>
+    </plurals>
+    <plurals name="sahha_caffeine_drinks">
+        <item quantity="one">%d boisson</item>
+        <item quantity="other">%d boissons</item>
+    </plurals>
 </resources>

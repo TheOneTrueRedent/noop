@@ -2895,8 +2895,8 @@
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
     <string name="sahha_date_of_birth">Дата рождения</string>
-    <string name="sahha_auto_track_title">Автоматически записывать прогулки и тренировки</string>
-    <string name="sahha_auto_track_detail">После синхронизации завершённые прогулки и пробежки (по шагомеру браслета) и другие продолжительные нагрузки (по пульсу) сохраняются как тренировки сами. Любую можно изменить, переименовать или удалить, и удалённая не добавится снова. Только на этом телефоне.</string>
+    <string name="sahha_auto_track_title">Автоматически записывать прогулки и пробежки</string>
+    <string name="sahha_auto_track_detail">После синхронизации завершённые прогулки и пробежки (по шагомеру браслета) сохраняются как тренировки сами. Любую можно изменить, переименовать или удалить, и удалённая не добавится снова. Только на этом телефоне.</string>
     <string name="sahha_photo_card">Фотокарточка</string>
     <string name="sahha_photo_take">Сделать фото</string>
     <string name="sahha_photo_choose">Выбрать фото</string>
@@ -2906,4 +2906,110 @@
     <string name="sahha_photo_rhr">Пульс покоя %1$d</string>
     <string name="sahha_photo_hrv">ВСР %1$d мс</string>
     <string name="sahha_photo_steps">%1$s шагов</string>
+    <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
+    <string name="sahha_look_title">Стиль</string>
+    <string name="sahha_look_sage">Мудрец</string>
+    <string name="sahha_look_conqueror">Завоеватель</string>
+    <string name="sahha_look_detail">Два тёмных стиля с одними и теми же цифрами. Мудрец: нефрит и золото, спокойный, но мощный. Завоеватель: бронированный фиолетовый и багровый.</string>
+    <string name="sahha_form_seiza">Seiza</string>
+    <string name="sahha_form_shu">Shu</string>
+    <string name="sahha_form_ha">Ha</string>
+    <string name="sahha_form_mushin">Mushin</string>
+    <string name="sahha_form_kiai">Kiai</string>
+    <string name="sahha_form_kiai_range">рывок</string>
+    <string name="sahha_effort_to_go">Ещё впереди</string>
+    <string name="sahha_effort_on_target">В цели</string>
+    <string name="sahha_effort_above">Выше вашего диапазона</string>
+    <string name="sahha_principle_seiza_title">Сэйдза · неподвижность</string>
+    <string name="sahha_principle_seiza_body">Заряд низкий. Сегодня отдых и есть тренировка: лёгкое движение и ранний сон.</string>
+    <string name="sahha_principle_shu_title">Фудосин · непоколебимый ум</string>
+    <string name="sahha_principle_shu_body">Держите нагрузку в пределах %1$s–%2$s. Ровная работа, без геройства.</string>
+    <string name="sahha_principle_ha_title">Ха · сломай форму</string>
+    <string name="sahha_principle_ha_body">Сегодня есть запас. Доведите нагрузку до верха диапазона %1$s–%2$s.</string>
+    <string name="sahha_principle_mushin_title">Мусин · не-ум</string>
+    <string name="sahha_principle_mushin_body">И заряд, и ВСР высокие. Всё сошлось: используйте это.</string>
+    <string name="sahha_principle_kiai_title">Киай · цена</string>
+    <string name="sahha_principle_kiai_body">Нагрузка %1$s выше вашего диапазона (%2$s). Завтра заряд будет ниже: восполните его долгим сном.</string>
+    <string name="sahha_band_title">Ваш диапазон ±5 лет</string>
+    <string name="sahha_band_you_are">вам %1$s</string>
+    <string name="sahha_sleeping_hr">Пульс во сне</string>
+    <string name="sahha_bpm">уд/мин</string>
+    <string name="sahha_sleeping_hr_normal">На уровне последних ночей</string>
+    <string name="sahha_sleeping_hr_above">На %1$s уд/мин выше последних ночей</string>
+    <string name="sahha_sleeping_hr_below">На %1$s уд/мин ниже последних ночей</string>
+    <string name="sahha_sleeping_hr_note">Среднее за основной сон. Ниже обычного значит, что вы хорошо расслабились. Выше часто бывает после алкоголя, позднего ужина, болезни или тяжёлой поздней тренировки.</string>
+    <string name="sahha_checkin_title">Утренний вопрос</string>
+    <string name="sahha_checkin_reason">Прошлая ночь прошла напряжённо: пульс во сне на %1$s уд/мин выше вашей нормы.</string>
+    <string name="sahha_checkin_question">Вы пили вчера алкоголь?</string>
+    <string name="sahha_yes">Да</string>
+    <string name="sahha_no">Нет</string>
+    <string name="sahha_skip">Пропустить</string>
+    <string name="sahha_caffeine">Кофеин сегодня</string>
+    <string name="sahha_caffeine_mg">%1$d мг</string>
+    <string name="sahha_caffeine_last">последний в %1$s</string>
+    <string name="sahha_marishi">Marishi</string>
+    <string name="sahha_marishi_intro">Спрашивайте о своих цифрах. Маричи отвечает через агента разговора Home Assistant по вашим последним 7 дням.</string>
+    <string name="sahha_marishi_hint">Спросите Маричи</string>
+    <string name="sahha_marishi_send">Отправить</string>
+    <string name="sahha_marishi_thinking">Маричи думает…</string>
+    <string name="sahha_marishi_not_configured">Для Маричи сначала нужна отправка в Home Assistant (Настройки › Собственный сервер).</string>
+    <string name="sahha_marishi_no_agent">Выберите агента разговора для Маричи в Home Assistant: NOOP Push Receiver › Настроить.</string>
+    <string name="sahha_marishi_failed">Маричи сейчас не смогла ответить. Попробуйте чуть позже.</string>
+    <string name="sahha_quests">Shugyō</string>
+    <string name="sahha_streak_rule">День засчитывается, если вы вышли в свой диапазон нагрузки, отдохнули при низком заряде или проспали 7 часов.</string>
+    <string name="sahha_this_week">На этой неделе</string>
+    <string name="sahha_sparks">Искры</string>
+    <string name="sahha_orb_tint">Цвет сферы</string>
+    <string name="sahha_quest_progress">%1$d из %2$d</string>
+    <string name="sahha_chest_locked">Сундук закрыт</string>
+    <string name="sahha_chest_open">Открыть сундук</string>
+    <string name="sahha_chest_opened">Сундук открыт</string>
+    <plurals name="sahha_streak_days">
+        <item quantity="one">%d день подряд</item>
+        <item quantity="few">%d дня подряд</item>
+        <item quantity="many">%d дней подряд</item>
+        <item quantity="other">%d дня подряд</item>
+    </plurals>
+    <plurals name="sahha_tint_unlock">
+        <item quantity="one">Каждый сундук открывает следующий цвет сферы.</item>
+        <item quantity="few">Каждые %d сундука открывают следующий цвет сферы.</item>
+        <item quantity="many">Каждые %d сундуков открывают следующий цвет сферы.</item>
+        <item quantity="other">Каждые %d сундука открывают следующий цвет сферы.</item>
+    </plurals>
+    <plurals name="sahha_quest_train">
+        <item quantity="one">Потренируйтесь %d раз</item>
+        <item quantity="few">Потренируйтесь %d раза</item>
+        <item quantity="many">Потренируйтесь %d раз</item>
+        <item quantity="other">Потренируйтесь %d раза</item>
+    </plurals>
+    <plurals name="sahha_quest_hard_easy">
+        <item quantity="one">После тяжёлого дня — лёгкий</item>
+        <item quantity="few">После %d тяжёлых дней — лёгкие</item>
+        <item quantity="many">После %d тяжёлых дней — лёгкие</item>
+        <item quantity="other">После %d тяжёлого дня — лёгкие</item>
+    </plurals>
+    <plurals name="sahha_quest_sleep">
+        <item quantity="one">Спать 7 часов %d ночь</item>
+        <item quantity="few">Спать 7 часов %d ночи</item>
+        <item quantity="many">Спать 7 часов %d ночей</item>
+        <item quantity="other">Спать 7 часов %d ночи</item>
+    </plurals>
+    <plurals name="sahha_quest_steps">
+        <item quantity="one">Пройти %1$s шагов за %2$d день</item>
+        <item quantity="few">Пройти %1$s шагов за %2$d дня</item>
+        <item quantity="many">Пройти %1$s шагов за %2$d дней</item>
+        <item quantity="other">Пройти %1$s шагов за %2$d дня</item>
+    </plurals>
+    <plurals name="sahha_sleeping_hr_building">
+        <item quantity="one">Ещё %d ночь до вашей нормы</item>
+        <item quantity="few">Ещё %d ночи до вашей нормы</item>
+        <item quantity="many">Ещё %d ночей до вашей нормы</item>
+        <item quantity="other">Ещё %d ночи до вашей нормы</item>
+    </plurals>
+    <plurals name="sahha_caffeine_drinks">
+        <item quantity="one">%d напиток</item>
+        <item quantity="few">%d напитка</item>
+        <item quantity="many">%d напитков</item>
+        <item quantity="other">%d напитка</item>
+    </plurals>
 </resources>
