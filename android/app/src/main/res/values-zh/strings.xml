@@ -2953,4 +2953,16 @@
     <plurals name="slate_recorded_days">
         <item quantity="other">%1$d 天有记录</item>
     </plurals>
+    <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_auto_track_title">自动记录步行和运动</string>
+    <string name="sahha_auto_track_detail">同步后，已结束的步行和跑步（来自手环的计步器）以及其他持续运动（来自心率）会自动保存为锻炼。每条都可以编辑、重命名或删除，删除的不会再次添加。仅在此手机上。</string>
+    <string name="sahha_photo_card">照片卡片</string>
+    <string name="sahha_photo_take">拍照</string>
+    <string name="sahha_photo_choose">选择照片</string>
+    <string name="sahha_photo_share">分享</string>
+    <string name="sahha_photo_share_failed">无法分享照片卡片。</string>
+    <string name="sahha_photo_privacy">照片保留在此手机上。只有点按分享时才会发出。</string>
+    <string name="sahha_photo_rhr">静息心率 %1$d</string>
+    <string name="sahha_photo_hrv">心率变异性 %1$d 毫秒</string>
+    <string name="sahha_photo_steps">%1$s 步</string>
 </resources>

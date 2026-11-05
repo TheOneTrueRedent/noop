@@ -176,7 +176,7 @@ fun SlateHealthScreen(
             vm.repo.metricSeriesComputedUnion(vm.activeStrapId, "vo2max_est", from, "9999-12-31").map { it.day to it.value }
         }.getOrDefault(emptyList())
     }
-    val age = profile.age.toDouble()
+    val age = profile.exactAge
     val sex = profile.sex
     val todayKey = remember { LocalDate.now().toString() }
     val gate = remember(days) { days.takeLast(7) }

@@ -509,6 +509,8 @@ object BottomBarStyleStore {
 @Composable
 fun AppRoot(viewModel: AppViewModel = viewModel()) {
     val nav = rememberNavController()
+    // Fork-only (Saħħa): record finished walks, runs and exercise after each sync.
+    AutoActivityTrackingEffect(viewModel)
 
     val backStack by nav.currentBackStackEntryAsState()
     val currentRoute = backStack?.destination?.route

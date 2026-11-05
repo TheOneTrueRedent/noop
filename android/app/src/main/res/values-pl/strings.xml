@@ -3014,4 +3014,16 @@
         <item quantity="many">%1$d dni z zapisem</item>
         <item quantity="other">%1$d dnia z zapisem</item>
     </plurals>
+    <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_auto_track_title">Automatycznie zapisuj spacery i ćwiczenia</string>
+    <string name="sahha_auto_track_detail">Po synchronizacji zakończone spacery i biegi (z licznika kroków opaski) oraz inny dłuższy wysiłek (z tętna) zapisują się same jako treningi. Każdy można edytować, przemianować lub usunąć, a usunięty nie zostanie dodany ponownie. Tylko na tym telefonie.</string>
+    <string name="sahha_photo_card">Karta ze zdjęciem</string>
+    <string name="sahha_photo_take">Zrób zdjęcie</string>
+    <string name="sahha_photo_choose">Wybierz zdjęcie</string>
+    <string name="sahha_photo_share">Udostępnij</string>
+    <string name="sahha_photo_share_failed">Nie udało się udostępnić karty ze zdjęciem.</string>
+    <string name="sahha_photo_privacy">Zdjęcie zostaje na tym telefonie. Opuszcza go tylko po dotknięciu Udostępnij.</string>
+    <string name="sahha_photo_rhr">Tętno spoczynkowe %1$d</string>
+    <string name="sahha_photo_hrv">Zmienność rytmu %1$d ms</string>
+    <string name="sahha_photo_steps">%1$s kroków</string>
 </resources>

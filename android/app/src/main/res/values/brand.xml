@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fork-only brand strings (Saħħa [Red Edition]). A proper name is the same in every language, so these
+  are translatable="false" and live outside strings.xml, which keeps them out of the per-locale
+  translation gate. The launcher label itself is app_name, rewritten by the brand overlay in
+  app/build.gradle.kts.
+-->
+<resources>
+    <string name="brand_name" translatable="false">Saħħa</string>
+    <string name="brand_edition" translatable="false">Red Edition</string>
+    <string name="brand_built_on" translatable="false">Built on NOOP · PolyForm Noncommercial 1.0.0 · Copyright 2026 NoopApp</string>
+</resources>

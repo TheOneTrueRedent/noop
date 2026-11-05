@@ -2980,4 +2980,16 @@
         <item quantity="one">%1$d dia registado</item>
         <item quantity="other">%1$d dias registados</item>
     </plurals>
+    <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_auto_track_title">Registar caminhadas e exercício automaticamente</string>
+    <string name="sahha_auto_track_detail">Depois de uma sincronização, as caminhadas e corridas terminadas (do contador de passos da tua banda) e outro exercício prolongado (da frequência cardíaca) ficam guardados sozinhos como treinos. Cada um pode ser editado, renomeado ou apagado, e um apagado não volta a ser adicionado. Só neste telemóvel.</string>
+    <string name="sahha_photo_card">Cartão com foto</string>
+    <string name="sahha_photo_take">Tirar foto</string>
+    <string name="sahha_photo_choose">Escolher foto</string>
+    <string name="sahha_photo_share">Partilhar</string>
+    <string name="sahha_photo_share_failed">Não foi possível partilhar o cartão com foto.</string>
+    <string name="sahha_photo_privacy">A foto fica neste telemóvel. Só sai quando tocas em Partilhar.</string>
+    <string name="sahha_photo_rhr">FC em repouso %1$d</string>
+    <string name="sahha_photo_hrv">VFC %1$d ms</string>
+    <string name="sahha_photo_steps">%1$s passos</string>
 </resources>

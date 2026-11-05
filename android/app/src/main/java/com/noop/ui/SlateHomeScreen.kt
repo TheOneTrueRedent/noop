@@ -33,6 +33,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Bedtime
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -294,6 +295,24 @@ fun SlateHomeScreen(
     val calibration = slateCalibration(validNights, stressScore != null, rangesPersonal)
 
     var featuresOpen by rememberSaveable { mutableStateOf(false) }
+    // Fork-only (Saħħa): the photo card dialog, fed the same numbers the dials show.
+    var photoCardOpen by remember { mutableStateOf(false) }
+    if (photoCardOpen) {
+        SlatePhotoCardDialog(
+            stats = SlatePhotoStats(
+                date = runCatching { LocalDate.parse(rowKey) }.getOrNull()
+                    ?.format(slateDateFormat(SLATE_SKELETON_WEEKDAY)) ?: rowKey,
+                rest = rest?.roundToInt(),
+                charge = charge?.roundToInt(),
+                effort = effort?.let { String.format(Locale.getDefault(), "%.1f", it) },
+                effortFraction = slatePhotoEffortFraction(effort, effortMax),
+                restingHr = row?.restingHr,
+                hrv = row?.avgHrv?.roundToInt(),
+                steps = row?.steps,
+            ),
+            onDismiss = { photoCardOpen = false },
+        )
+    }
     var activitiesOpen by rememberSaveable { mutableStateOf(true) }
 
     val scroll = rememberScrollState()
@@ -348,12 +367,18 @@ fun SlateHomeScreen(
                 )
             }
 
-            Text(
-                uiString(R.string.app_name).uppercase(),
-                style = SlateType.heading.copy(letterSpacing = 3.sp),
-                color = SlateUi.textPrimary,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-            )
+            Column(Modifier.align(Alignment.CenterHorizontally), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    uiString(R.string.brand_name).uppercase(),
+                    style = SlateType.heading.copy(letterSpacing = 3.sp),
+                    color = SlateUi.textPrimary,
+                )
+                Text(
+                    uiString(R.string.brand_edition).uppercase(),
+                    style = SlateType.labelCaps.copy(fontSize = 10.sp, letterSpacing = 2.4.sp),
+                    color = SlateUi.brandRed,
+                )
+            }
 
             // The three dials.
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -451,6 +476,7 @@ fun SlateHomeScreen(
                         SlateSleepTonight(row, days, importedNeed, habitualMidsleepSec, is24h, onOpenSleep)
                         SlateJournalWeek(journal, onOpenJournal)
                         SlateWideButton(Icons.Filled.Lightbulb, uiString(R.string.slate_behaviour_insights), onOpenInsights)
+                        SlateWideButton(Icons.Filled.PhotoCamera, uiString(R.string.sahha_photo_card)) { photoCardOpen = true }
                     }
                 }
             }
@@ -849,7 +875,7 @@ private fun SlateWideButton(icon: ImageVector, text: String, onClick: () -> Unit
 }
 
 @Composable
-private fun SlateActionButton(icon: ImageVector, text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+internal fun SlateActionButton(icon: ImageVector, text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier.height(58.dp).clip(RoundedCornerShape(14.dp)).background(SlateUi.raised).clickable(onClick = onClick)
             .padding(horizontal = 10.dp),

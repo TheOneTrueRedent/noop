@@ -3017,4 +3017,16 @@
         <item quantity="one">%1$d recorded day</item>
         <item quantity="other">%1$d recorded days</item>
     </plurals>
+    <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_auto_track_title">Auto-track walks and exercise</string>
+    <string name="sahha_auto_track_detail">After a sync, finished walks and runs (from your strap\'s step counter) and other sustained exercise (from heart rate) are saved as workouts by themselves. Each one can be edited, relabelled or deleted, and a deleted one is not added again. On this phone only.</string>
+    <string name="sahha_photo_card">Photo card</string>
+    <string name="sahha_photo_take">Take photo</string>
+    <string name="sahha_photo_choose">Choose photo</string>
+    <string name="sahha_photo_share">Share</string>
+    <string name="sahha_photo_share_failed">Couldn\'t share the photo card.</string>
+    <string name="sahha_photo_privacy">The photo stays on this phone. It only leaves when you tap Share.</string>
+    <string name="sahha_photo_rhr">RHR %1$d</string>
+    <string name="sahha_photo_hrv">HRV %1$d ms</string>
+    <string name="sahha_photo_steps">%1$s steps</string>
 </resources>

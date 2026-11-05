@@ -245,7 +245,7 @@ fun SlateScoreDetailScreen(
             SlateRing(fraction = if (heroValue == null) 0f else heroFraction.toFloat(), color = heroColor,
                 diameter = 280.dp, stroke = 17.dp)
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(uiString(R.string.app_name).uppercase(), style = SlateType.heading.copy(fontSize = 26.sp, letterSpacing = 5.sp),
+                Text(uiString(R.string.brand_name).uppercase(), style = SlateType.heading.copy(fontSize = 26.sp, letterSpacing = 5.sp),
                     color = SlateUi.track)
                 Spacer(Modifier.height(4.dp))
                 Text(

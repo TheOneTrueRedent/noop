@@ -2987,4 +2987,16 @@
         <item quantity="one">%1$d jour enregistré</item>
         <item quantity="other">%1$d jours enregistrés</item>
     </plurals>
+    <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_auto_track_title">Suivre automatiquement marches et exercice</string>
+    <string name="sahha_auto_track_detail">Après une synchronisation, les marches et courses terminées (d’après le podomètre de ton bracelet) et les autres efforts soutenus (d’après la fréquence cardiaque) sont enregistrés tout seuls comme séances. Chacune peut être modifiée, renommée ou supprimée, et une séance supprimée n’est pas ajoutée à nouveau. Sur ce téléphone uniquement.</string>
+    <string name="sahha_photo_card">Carte photo</string>
+    <string name="sahha_photo_take">Prendre une photo</string>
+    <string name="sahha_photo_choose">Choisir une photo</string>
+    <string name="sahha_photo_share">Partager</string>
+    <string name="sahha_photo_share_failed">Impossible de partager la carte photo.</string>
+    <string name="sahha_photo_privacy">La photo reste sur ce téléphone. Elle n’en sort que si tu touches Partager.</string>
+    <string name="sahha_photo_rhr">FC repos %1$d</string>
+    <string name="sahha_photo_hrv">VFC %1$d ms</string>
+    <string name="sahha_photo_steps">%1$s pas</string>
 </resources>

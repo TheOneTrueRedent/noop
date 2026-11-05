@@ -2893,4 +2893,16 @@
         <item quantity="many">%1$d дней с записью</item>
         <item quantity="other">%1$d дня с записью</item>
     </plurals>
+    <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_auto_track_title">Автоматически записывать прогулки и тренировки</string>
+    <string name="sahha_auto_track_detail">После синхронизации завершённые прогулки и пробежки (по шагомеру браслета) и другие продолжительные нагрузки (по пульсу) сохраняются как тренировки сами. Любую можно изменить, переименовать или удалить, и удалённая не добавится снова. Только на этом телефоне.</string>
+    <string name="sahha_photo_card">Фотокарточка</string>
+    <string name="sahha_photo_take">Сделать фото</string>
+    <string name="sahha_photo_choose">Выбрать фото</string>
+    <string name="sahha_photo_share">Поделиться</string>
+    <string name="sahha_photo_share_failed">Не удалось поделиться фотокарточкой.</string>
+    <string name="sahha_photo_privacy">Фото остаётся на этом телефоне. Оно уходит, только когда вы нажимаете «Поделиться».</string>
+    <string name="sahha_photo_rhr">Пульс покоя %1$d</string>
+    <string name="sahha_photo_hrv">ВСР %1$d мс</string>
+    <string name="sahha_photo_steps">%1$s шагов</string>
 </resources>

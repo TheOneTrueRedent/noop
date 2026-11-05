@@ -140,6 +140,9 @@ object SlateUi {
     val neutralBg = Color(0xFF393F43)
     val neutralText = Color(0xFF9AA0A5)
     val flame = Color(0xFFF26B21)
+
+    /** Fork-only: the Saħħa [Red Edition] brand red (edition label, launcher ring, photo card). */
+    val brandRed = Color(0xFFE5484D)
     val outlookWarm = Color(0xFF8B7B64)
     val outlookCool = Color(0xFF324A56)
     val tabBar = Color(0xFF2B373E)

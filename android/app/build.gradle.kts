@@ -144,6 +144,49 @@ android {
     }
 }
 
+// Fork-only: the Saħħa [Red Edition] brand overlay.
+//
+// The fork keeps upstream's application id and data (it installs over NOOP), but presents itself as
+// Saħħa. Rather than editing ~140 upstream strings in 9 locales (a merge conflict on every rebase),
+// this rewrites them at configuration time into a generated resource directory registered on the
+// `full` flavor source set, which outranks main/ in AGP's resource merge. Upstream text keeps flowing
+// in; only the product name in it changes. Strings that speak for the upstream PROJECT rather than
+// this app keep the NOOP name: the terms (liability, ToS), the changelog and the update notices.
+// The demo flavor and every non-string resource are untouched.
+val sahhaBrandName = "Saħħa"
+val sahhaAppLabel = "Saħħa [Red Edition]"
+val sahhaKeepNoop = listOf(
+    "terms_", "l10n_app_changelog_", "l10n_whats_new_sheet_", "l10n_updates_",
+    "l10n_settings_screen_what_s_new_in_noop_", "l10n_settings_screen_once_a_day_noop_",
+)
+val sahhaOverlayDir = layout.buildDirectory.dir("generated/sahhaBrandRes").get().asFile
+run {
+    val word = Regex("""\bNOOP\b""")
+    val entry = Regex("""<(string|plurals)\s+name="([^"]+)"[^>]*>.*?</\1>""", RegexOption.DOT_MATCHES_ALL)
+    val esc = { v: String -> v.replace("\\", "\\\\").replace("'", "\\'").replace("\"", "\\\"") }
+    sahhaOverlayDir.deleteRecursively()
+    file("src/main/res").listFiles { f -> f.isDirectory && f.name.startsWith("values") }?.forEach { dir ->
+        val src = File(dir, "strings.xml")
+        if (!src.exists()) return@forEach
+        val out = StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!-- GENERATED from ")
+            .append(dir.name).append("/strings.xml by app/build.gradle.kts. Do not edit. -->\n<resources>\n")
+        entry.findAll(src.readText()).forEach { m ->
+            val name = m.groupValues[2]
+            when {
+                name == "app_name" -> out.append("    <string name=\"app_name\">")
+                    .append(esc(sahhaAppLabel)).append("</string>\n")
+                sahhaKeepNoop.any { name.startsWith(it) } -> Unit
+                word.containsMatchIn(m.value.substringAfter('>')) ->
+                    out.append("    ").append(m.value.substringBefore('>') + ">" +
+                        word.replace(m.value.substringAfter('>'), sahhaBrandName)).append('\n')
+            }
+        }
+        out.append("</resources>\n")
+        File(sahhaOverlayDir, dir.name).apply { mkdirs() }.resolve("strings.xml").writeText(out.toString())
+    }
+}
+android.sourceSets.getByName("full").res.srcDir(sahhaOverlayDir)
+
 // Room schema JSON export — the Android half of the Room<->GRDB schema parity oracle (#775).
 //
 // Room's KSP processor writes one JSON file per @Database version describing the EXACT `CREATE TABLE`

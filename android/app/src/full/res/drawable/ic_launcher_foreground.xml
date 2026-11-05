@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fork-only (Saħħa [Red Edition]): the launcher mark. A red Slate-style ring opened at the top-left
+     around the Maltese ħ (from Figtree Bold, OFL), centred in the 108dp adaptive safe zone. Lives in the
+     `full` flavor source set so it overrides main/ without touching upstream files. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path
+        android:pathData="M54,27 A27,27 0 1 1 30.6,40.5"
+        android:strokeColor="#E5484D"
+        android:strokeWidth="6.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M42.07 44.63V40.74H57.43V44.63ZM44.72 70V38H50.75V50.07Q51.9 48.38 53.59 47.49Q55.28 46.59 57.38 46.59Q60.13 46.59 62.02 47.69Q63.92 48.79 64.93 51.1Q65.93 53.41 65.93 57.06V70H59.9V58.3Q59.9 55.97 59.35 54.69Q58.8 53.41 57.84 52.83Q56.88 52.26 55.6 52.26Q53.27 52.22 52.01 53.68Q50.75 55.14 50.75 58.02V70Z"
+        android:fillColor="#FFFFFF"/>
+</vector>
