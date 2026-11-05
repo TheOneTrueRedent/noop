@@ -164,7 +164,11 @@ fun SlateHealthScreen(
     var updated by remember { mutableStateOf<String?>(null) }
     var weekly by remember { mutableStateOf<List<Pair<String, Double>>>(emptyList()) }
     var vo2 by remember { mutableStateOf<List<Pair<String, Double>>>(emptyList()) }
-    LaunchedEffect(days) {
+    // Fork-only (Saħħa): recompute the stored weekly value from today's profile and gate on open, so the
+    // headline is never a pass behind Home Assistant (same rule as the manual refresh button).
+    var refreshed by remember { mutableStateOf(0) }
+    LaunchedEffect(Unit) { vm.refreshFitnessAgeNow { refreshed++ } }
+    LaunchedEffect(days, refreshed) {
         val latest = runCatching { vm.repo.latestMetricComputedUnion(vm.activeStrapId, "fitness_age") }.getOrNull()
         fitnessAge = latest?.value
         updated = latest?.day

@@ -1026,6 +1026,10 @@ fun SettingsScreen(
                     )
                 }
                 SettingsRowDivider()
+                // Fork-only (Saħħa): the real date of birth. The stepper above can only re-anchor it to
+                // "today minus N years", which makes age-to-the-day (Fitness Age) wrong by up to a year.
+                SahhaDateOfBirthRow(profile = profile, onChanged = { mutate { } })
+                SettingsRowDivider()
                 SettingsFormRow(label = uiString(R.string.l10n_settings_screen_sex_e301dd60)) {
                     SegmentedPillControl(
                         items = SEX_OPTIONS,

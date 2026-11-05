@@ -2894,6 +2894,7 @@
         <item quantity="other">%1$d дня с записью</item>
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_date_of_birth">Дата рождения</string>
     <string name="sahha_auto_track_title">Автоматически записывать прогулки и тренировки</string>
     <string name="sahha_auto_track_detail">После синхронизации завершённые прогулки и пробежки (по шагомеру браслета) и другие продолжительные нагрузки (по пульсу) сохраняются как тренировки сами. Любую можно изменить, переименовать или удалить, и удалённая не добавится снова. Только на этом телефоне.</string>
     <string name="sahha_photo_card">Фотокарточка</string>

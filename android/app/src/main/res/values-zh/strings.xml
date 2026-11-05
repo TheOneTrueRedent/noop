@@ -2954,6 +2954,7 @@
         <item quantity="other">%1$d 天有记录</item>
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_date_of_birth">出生日期</string>
     <string name="sahha_auto_track_title">自动记录步行和运动</string>
     <string name="sahha_auto_track_detail">同步后，已结束的步行和跑步（来自手环的计步器）以及其他持续运动（来自心率）会自动保存为锻炼。每条都可以编辑、重命名或删除，删除的不会再次添加。仅在此手机上。</string>
     <string name="sahha_photo_card">照片卡片</string>

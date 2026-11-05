@@ -2989,6 +2989,7 @@
         <item quantity="other">%1$d días registrados</item>
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_date_of_birth">Fecha de nacimiento</string>
     <string name="sahha_auto_track_title">Registrar paseos y ejercicio automáticamente</string>
     <string name="sahha_auto_track_detail">Tras una sincronización, los paseos y carreras terminados (del contador de pasos de tu banda) y otro ejercicio sostenido (de la frecuencia cardiaca) se guardan solos como entrenamientos. Cada uno se puede editar, renombrar o borrar, y uno borrado no se vuelve a añadir. Solo en este teléfono.</string>
     <string name="sahha_photo_card">Tarjeta de foto</string>

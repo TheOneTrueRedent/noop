@@ -3018,6 +3018,7 @@
         <item quantity="other">%1$d recorded days</item>
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_date_of_birth">Date of birth</string>
     <string name="sahha_auto_track_title">Auto-track walks and exercise</string>
     <string name="sahha_auto_track_detail">After a sync, finished walks and runs (from your strap\'s step counter) and other sustained exercise (from heart rate) are saved as workouts by themselves. Each one can be edited, relabelled or deleted, and a deleted one is not added again. On this phone only.</string>
     <string name="sahha_photo_card">Photo card</string>

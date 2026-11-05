@@ -2988,6 +2988,7 @@
         <item quantity="other">%1$d jours enregistrés</item>
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_date_of_birth">Date de naissance</string>
     <string name="sahha_auto_track_title">Suivre automatiquement marches et exercice</string>
     <string name="sahha_auto_track_detail">Après une synchronisation, les marches et courses terminées (d’après le podomètre de ton bracelet) et les autres efforts soutenus (d’après la fréquence cardiaque) sont enregistrés tout seuls comme séances. Chacune peut être modifiée, renommée ou supprimée, et une séance supprimée n’est pas ajoutée à nouveau. Sur ce téléphone uniquement.</string>
     <string name="sahha_photo_card">Carte photo</string>

@@ -3002,6 +3002,7 @@
         <item quantity="other">%1$d erfasste Tage</item>
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_date_of_birth">Geburtsdatum</string>
     <string name="sahha_auto_track_title">Spaziergänge und Training automatisch erfassen</string>
     <string name="sahha_auto_track_detail">Nach einer Synchronisierung werden abgeschlossene Spaziergänge und Läufe (aus dem Schrittzähler deines Bands) und anderes anhaltendes Training (aus der Herzfrequenz) automatisch als Workouts gespeichert. Jedes lässt sich bearbeiten, umbenennen oder löschen, und ein gelöschtes wird nicht erneut hinzugefügt. Nur auf diesem Telefon.</string>
     <string name="sahha_photo_card">Fotokarte</string>

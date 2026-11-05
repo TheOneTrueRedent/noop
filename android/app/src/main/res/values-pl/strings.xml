@@ -3015,6 +3015,7 @@
         <item quantity="other">%1$d dnia z zapisem</item>
     </plurals>
     <!-- Fork-only (Saħħa [Red Edition]): auto tracking and the photo card. -->
+    <string name="sahha_date_of_birth">Data urodzenia</string>
     <string name="sahha_auto_track_title">Automatycznie zapisuj spacery i ćwiczenia</string>
     <string name="sahha_auto_track_detail">Po synchronizacji zakończone spacery i biegi (z licznika kroków opaski) oraz inny dłuższy wysiłek (z tętna) zapisują się same jako treningi. Każdy można edytować, przemianować lub usunąć, a usunięty nie zostanie dodany ponownie. Tylko na tym telefonie.</string>
     <string name="sahha_photo_card">Karta ze zdjęciem</string>
