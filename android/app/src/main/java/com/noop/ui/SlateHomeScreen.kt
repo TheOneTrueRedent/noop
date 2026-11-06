@@ -405,6 +405,7 @@ fun SlateHomeScreen(
                 ),
                 surge = surge,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
+                form = form,
             )
             SahhaFormLadder(form, surge)
             if (SahhaLook.sage) {

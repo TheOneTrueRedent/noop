@@ -2133,7 +2133,8 @@ object IntelligenceEngine {
         val faGateByDay = LinkedHashMap<String, DailyMetric>()
         for (d in faPriorDaily) faGateByDay[d.day] = d
         for (d in dailies) faGateByDay[d.day] = d
-        val faGate7 = faGateByDay.values.sortedBy { it.day }.takeLast(7)
+        val faGate7 = com.noop.sahha.settledFitnessDaysForPass(repo, importedDeviceId, faGateByDay.values.sortedBy { it.day },
+            newestDay, nowLocalMidnight, tzOffsetSeconds).takeLast(7)
         val faPts = fitnessAgeRows(faGate7, profile, computedId, saturdayKeyOnOrBefore(newestDay))
         // Strap-log proof: the RHR-night count the engine sees for the gate , should equal the "N of last 7
         // nights" the readiness card shows; `computed` says whether the value was (re)written this pass.
@@ -2772,8 +2773,8 @@ object IntelligenceEngine {
         val nowLocalMidnight = midnightLocal(nowSeconds, tzOffsetSeconds)
         val newestDay = AnalyticsEngine.dayString(nowLocalMidnight, tzOffsetSeconds)
         val oldestDay = AnalyticsEngine.dayString(nowLocalMidnight - (maxDays - 1) * SECONDS_PER_DAY, tzOffsetSeconds)
-        val gate7 = repo.daysMerged(importedDeviceId)
-            .filter { it.day in oldestDay..newestDay }.sortedBy { it.day }.takeLast(7)
+        val window = repo.daysMerged(importedDeviceId).filter { it.day in oldestDay..newestDay }.sortedBy { it.day }
+        val gate7 = com.noop.sahha.settledFitnessDays(repo, importedDeviceId, window, newestDay, nowSeconds, tzOffsetSeconds).takeLast(7)
         val rows = fitnessAgeRows(gate7, profile, computedId, saturdayKeyOnOrBefore(newestDay))
         if (rows.isNotEmpty()) {
             repo.upsertMetricSeriesWithProvenance(
