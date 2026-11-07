@@ -74,11 +74,12 @@ import kotlin.random.Random
 // impact. Below the reference's visible area: links to the Health monitor, Stress and NOOP's full Health hub.
 //
 // The headline is NOOP's authoritative stored weekly "fitness_age" — this screen only reads it. The age
-// impact of resting HR and activity re-applies FitnessAgeEngine to the SAME last-7-merged-days gate the
-// weekly value uses, holding the other input at the population reference, so the two impacts are exactly
-// the two terms of the published formula. Factors the model does not use show "— years", as in the
-// reference. Pace of aging is the least-squares slope of the stored weekly values (years per year), shown
-// only once half a year of weekly values exists. All display-only; nothing is written back.
+// impact of resting HR and activity re-applies FitnessAgeEngine to the SAME usual-week gate the weekly
+// value uses ([com.noop.sahha.FitnessWeek]), holding the other input at the population reference, so the
+// two impacts are exactly the two terms of the published formula. Factors the model does not use show
+// "— years", as in the reference. Pace of aging is the least-squares slope of weekly Fitness Age (years per
+// year) computed from the daily history by the same rule, shown once half a year of weeks exists. All
+// display-only; nothing is written back.
 
 /** Where a value sits on a factor's worse→better scale, 0..1; null without a value. */
 internal fun slateFactorPosition(value: Double?, worse: Double, better: Double): Float? {
@@ -162,7 +163,6 @@ fun SlateHealthScreen(
     val profile = remember { ProfileStore.from(context) }
     var fitnessAge by remember { mutableStateOf<Double?>(null) }
     var updated by remember { mutableStateOf<String?>(null) }
-    var weekly by remember { mutableStateOf<List<Pair<String, Double>>>(emptyList()) }
     var vo2 by remember { mutableStateOf<List<Pair<String, Double>>>(emptyList()) }
     // Fork-only (Saħħa): recompute the stored weekly value from today's profile and gate on open, so the
     // headline is never a pass behind Home Assistant (same rule as the manual refresh button).
@@ -173,9 +173,6 @@ fun SlateHealthScreen(
         fitnessAge = latest?.value
         updated = latest?.day
         val from = LocalDate.now().minusDays(400).toString()
-        weekly = runCatching {
-            vm.repo.metricSeriesComputedUnion(vm.activeStrapId, "fitness_age", from, "9999-12-31").map { it.day to it.value }
-        }.getOrDefault(emptyList())
         vo2 = runCatching {
             vm.repo.metricSeriesComputedUnion(vm.activeStrapId, "vo2max_est", from, "9999-12-31").map { it.day to it.value }
         }.getOrDefault(emptyList())
@@ -183,10 +180,17 @@ fun SlateHealthScreen(
     val age = profile.exactAge
     val sex = profile.sex
     val todayKey = remember { LocalDate.now().toString() }
-    val gate = remember(days) { days.takeLast(7) }
+    val gate = remember(days, todayKey) { com.noop.sahha.FitnessWeek.gate(days, todayKey) }
     val terms = remember(gate, age, sex) { slateFitnessTerms(gate, age, sex) }
     val rhrNights = gate.count { it.restingHr != null }
-    val pace = remember(weekly) { slatePaceOfAging(weekly) }
+    val birth = remember(profile.dateOfBirthMillis) {
+        runCatching {
+            java.time.Instant.ofEpochMilli(profile.dateOfBirthMillis).atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+        }.getOrNull()
+    }
+    val pace = remember(days, birth, sex) {
+        slatePaceOfAging(com.noop.sahha.FitnessWeek.weeklyHistory(days, birth, sex, LocalDate.parse(todayKey)))
+    }
 
     fun stats(span: Int, select: (DailyMetric) -> Double?) = slateWindowStats(days, todayKey, span, select)
     fun seriesStats(series: List<Pair<String, Double>>, span: Long): Pair<Double?, Int> {

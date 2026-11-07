@@ -42,6 +42,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
@@ -66,9 +68,10 @@ import kotlin.math.sin
 // glowing core inside a gold ensō with rays and a flame-shaped aura; Conqueror: a hex reticle that fills
 // with the score), the form ladder, Conqueror's segmented readout bars, the pills, the daily principle
 // card and the body-age band card. In a Kiai surge (Effort past the top of today's band) the orb, rays and
-// ladder turn red. In Sage the orb's aura takes the colour of the day's form, a ladder that climbs like
-// ki: green-gold, blue, violet, then silver, with red for the surge. Motion stops under reduced motion or
-// the battery saver ([rememberPoseStill]).
+// ladder turn red (Conqueror only). In Sage the orb takes the colours of the day's form, a ladder that
+// climbs like ki: green-gold, red-blue, violet-silver, then silver with purple, red, blue and green
+// surging around it. Sage has no surge state. Motion stops under reduced motion or the battery saver
+// ([rememberPoseStill]).
 
 private const val SAHHA_DASH = "–"
 
@@ -81,16 +84,35 @@ internal fun sahhaOrbStops(surge: Boolean, form: SahhaForm.Form? = null): Triple
     else -> orbTintStops(QuestPrefs.tint) ?: sahhaKiStops(form) ?: sahhaLookStops()
 }
 
-/** Sage's ki ladder: each form's colour stops, low to high. Null outside Sage or without a form. */
-internal fun sahhaKiStops(form: SahhaForm.Form?): Triple<Color, Color, Color>? {
+/**
+ * One rung of Sage's ki ladder: the orb's core stops (highlight, main, deep), the [aura] colours its rays
+ * and flame carry, and whether the aura [shifting]ly cycles round the orb (the top form only).
+ */
+internal data class SahhaKi(val high: Color, val main: Color, val deep: Color, val aura: List<Color>, val shifting: Boolean = false)
+
+private val KI_GOLD = Color(0xFFFFC83A)
+private val KI_GREEN = Color(0xFF8FE83A)
+private val KI_RED = Color(0xFFFF3B3B)
+private val KI_BLUE = Color(0xFF3AA2FF)
+private val KI_VIOLET = Color(0xFFB45CFF)
+private val KI_SILVER = Color(0xFFD8DEE8)
+private val KI_SURGE_GREEN = Color(0xFF4BE37A)
+
+/** Sage's ki ladder, low to high. Null outside Sage or without a form. */
+internal fun sahhaKi(form: SahhaForm.Form?): SahhaKi? {
     if (!SahhaLook.sage) return null
     return when (form ?: return null) {
-        SahhaForm.Form.SEIZA -> Triple(Color(0xFFF2FFB8), Color(0xFFC6F03A), Color(0xFF4F7A0C))
-        SahhaForm.Form.SHU -> Triple(Color(0xFFC8F4FF), Color(0xFF38C6FF), Color(0xFF0C4F96))
-        SahhaForm.Form.HA -> Triple(Color(0xFFF1CCFF), Color(0xFFB45CFF), Color(0xFF4C1786))
-        SahhaForm.Form.MUSHIN -> Triple(Color(0xFFFFFFFF), Color(0xFFD2DAE6), Color(0xFF5E6A80))
+        SahhaForm.Form.SEIZA -> SahhaKi(Color(0xFFF6FFC4), Color(0xFFC6F03A), Color(0xFF4F7A0C), listOf(KI_GOLD, KI_GREEN))
+        SahhaForm.Form.SHU -> SahhaKi(Color(0xFFFFD2CC), KI_RED, Color(0xFF0C3E9C), listOf(KI_RED, KI_BLUE))
+        SahhaForm.Form.HA -> SahhaKi(Color(0xFFF6EEFF), KI_VIOLET, Color(0xFF4C1786), listOf(KI_VIOLET, KI_SILVER))
+        SahhaForm.Form.MUSHIN -> SahhaKi(Color(0xFFFFFFFF), KI_SILVER, Color(0xFF5E6A80),
+            listOf(KI_VIOLET, KI_RED, KI_BLUE, KI_SURGE_GREEN), shifting = true)
     }
 }
+
+/** [sahhaKi] as plain orb stops. */
+internal fun sahhaKiStops(form: SahhaForm.Form?): Triple<Color, Color, Color>? =
+    sahhaKi(form)?.let { Triple(it.high, it.main, it.deep) }
 
 /** The look's own orb stops: jade (Sage) or violet (Conqueror). */
 internal fun sahhaLookStops(): Triple<Color, Color, Color> =
@@ -155,6 +177,13 @@ internal fun SahhaTodayOrb(
     ).value
     val (high, main, deep) = sahhaOrbStops(surge, form)
     val sage = SahhaLook.sage
+    // The aura follows the form unless a chest tint was chosen; then the tint's own colour carries it.
+    val ki = sahhaKi(form)?.takeIf { orbTintStops(QuestPrefs.tint) == null }
+    val phase = if (still) 0f else rememberInfiniteTransition(label = "sahha_ki").animateFloat(
+        initialValue = 0f, targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(9_000, easing = LinearEasing), RepeatMode.Restart),
+        label = "sahha_ki_phase",
+    ).value
     val accent = if (surge) SlateUi.surge else SlateUi.accent
     val track = SlateUi.track
     val textColor = SlateUi.textPrimary
@@ -164,7 +193,7 @@ internal fun SahhaTodayOrb(
         contentAlignment = Alignment.Center,
     ) {
         Canvas(Modifier.fillMaxSize()) {
-            if (sage) drawSageOrb(shown, breathe, high, main, deep, accent)
+            if (sage) drawSageOrb(shown, breathe, phase, high, main, deep, accent, ki?.aura.orEmpty(), ki?.shifting == true)
             else drawConquerorOrb(shown, breathe, high, main, deep, accent, track)
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -175,18 +204,30 @@ internal fun SahhaTodayOrb(
     }
 }
 
-private fun DrawScope.drawSageOrb(fill: Float, breathe: Float, high: Color, main: Color, deep: Color, ring: Color) {
+private fun DrawScope.drawSageOrb(
+    fill: Float, breathe: Float, phase: Float, high: Color, main: Color, deep: Color, ring: Color,
+    aura: List<Color>, shifting: Boolean,
+) {
     val c = Offset(size.width / 2f, size.height / 2f)
     val outer = size.minDimension / 2f
-    // Rays fanning up and out from the orb.
+    val n = aura.size
+    // The aura colour at position [i], drifting along the list as [phase] turns when the form shifts.
+    fun auraAt(i: Int): Color {
+        if (n == 0) return main
+        if (!shifting) return aura[i.mod(n)]
+        val t = phase * n + i
+        val k = kotlin.math.floor(t).toInt()
+        return lerp(aura[k.mod(n)], aura[(k + 1).mod(n)], t - k)
+    }
+    // Rays fanning up and out from the orb, alternating through the aura's colours.
     val rays = listOf(-90f to 1f, -125f to 0.85f, -55f to 0.85f, -160f to 0.7f, -20f to 0.7f, -105f to 0.9f, -75f to 0.9f)
-    rays.forEach { (deg, len) ->
+    rays.forEachIndexed { i, (deg, len) ->
         val a = Math.toRadians(deg.toDouble()).toFloat()
-        drawLine(main.copy(alpha = 0.22f + 0.18f * breathe), c,
+        drawLine(auraAt(i).copy(alpha = 0.26f + 0.2f * breathe), c,
             Offset(c.x + cos(a) * outer * 1.25f * len, c.y + sin(a) * outer * 1.25f * len),
             strokeWidth = 2.5f * density, cap = StrokeCap.Round)
     }
-    // A flame-shaped aura rising behind the orb, in the orb's own colour.
+    // A flame-shaped aura rising behind the orb: the form's colours blended from base to tip.
     val r = outer * 0.6f
     val flame = Path().apply {
         moveTo(c.x, c.y - outer * 1.05f)
@@ -195,19 +236,46 @@ private fun DrawScope.drawSageOrb(fill: Float, breathe: Float, high: Color, main
         cubicTo(c.x - r * 1.45f, c.y - r * 0.2f, c.x - r * 0.55f, c.y - outer * 0.55f, c.x, c.y - outer * 1.05f)
         close()
     }
-    drawPath(flame, main.copy(alpha = 0.2f + 0.12f * breathe))
+    val flameAlpha = 0.22f + 0.12f * breathe
+    if (n >= 2 && !shifting) {
+        drawPath(flame, Brush.verticalGradient(
+            0f to aura[1].copy(alpha = flameAlpha), 1f to aura[0].copy(alpha = flameAlpha),
+            startY = c.y - outer * 1.05f, endY = c.y + r * 1.4f,
+        ))
+    } else {
+        drawPath(flame, main.copy(alpha = flameAlpha))
+    }
+    // The top form: surges of each colour circling the silver core, each swelling in turn.
+    if (shifting && n > 0) {
+        for (i in 0 until n) {
+            val ang = (2 * PI * (phase + i.toFloat() / n)).toFloat()
+            val swell = 0.5f + 0.5f * sin((2 * PI * (phase * 2 + i.toFloat() / n)).toFloat())
+            val at = Offset(c.x + cos(ang) * r * 0.95f, c.y + sin(ang) * r * 0.95f)
+            val br = r * (0.85f + 0.35f * swell)
+            drawCircle(Brush.radialGradient(0f to aura[i].copy(alpha = 0.35f + 0.35f * swell), 1f to Color.Transparent,
+                center = at, radius = br), radius = br, center = at)
+        }
+    }
     // Glow, then the core lit from the top left.
     drawCircle(Brush.radialGradient(0f to main.copy(alpha = 0.55f + 0.15f * breathe), 1f to Color.Transparent,
         center = c, radius = r * 1.6f), radius = r * 1.6f, center = c)
     drawCircle(Brush.radialGradient(0f to high.copy(alpha = 0.9f), 0.55f to main.copy(alpha = 0.7f), 1f to deep.copy(alpha = 0.4f),
         center = Offset(c.x - r * 0.3f, c.y - r * 0.35f), radius = r * 1.5f), radius = r, center = c)
-    // The ensō: a brush circle open at the top right, the stroke growing with the score.
+    // The ensō: a brush circle open at the top right, the stroke growing with the score. In the top form
+    // it carries every colour of the aura.
     val er = outer * 0.8f
     val sweep = 40f + 280f * fill
     drawArc(ring.copy(alpha = 0.18f), startAngle = -50f, sweepAngle = 320f, useCenter = false,
         topLeft = Offset(c.x - er, c.y - er), size = Size(er * 2, er * 2), style = Stroke(width = 6f * density, cap = StrokeCap.Round))
-    drawArc(ring, startAngle = -50f, sweepAngle = sweep, useCenter = false,
-        topLeft = Offset(c.x - er, c.y - er), size = Size(er * 2, er * 2), style = Stroke(width = 13f * density, cap = StrokeCap.Round))
+    val enso = Stroke(width = 13f * density, cap = StrokeCap.Round)
+    if (shifting && n > 0) {
+        val stops = (0..n).map { auraAt(it) }
+        drawArc(Brush.sweepGradient(stops, center = c), startAngle = -50f, sweepAngle = sweep, useCenter = false,
+            topLeft = Offset(c.x - er, c.y - er), size = Size(er * 2, er * 2), style = enso)
+    } else {
+        drawArc(ring, startAngle = -50f, sweepAngle = sweep, useCenter = false,
+            topLeft = Offset(c.x - er, c.y - er), size = Size(er * 2, er * 2), style = enso)
+    }
 }
 
 private fun DrawScope.drawConquerorOrb(fill: Float, breathe: Float, high: Color, main: Color, deep: Color, accent: Color, track: Color) {
@@ -256,21 +324,33 @@ internal fun SahhaFormLadder(form: SahhaForm.Form?, surge: Boolean, modifier: Mo
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
         items.forEach { (f, name, range) ->
             val on = f == form && !surge
-            val ki = sahhaKiStops(f)?.second
-            LadderCell(name, range, on, ki ?: SlateUi.energy, sage, Modifier.weight(1f), dimColor = ki?.copy(alpha = 0.7f))
+            val ki = sahhaKi(f)
+            LadderCell(name, range, on, ki?.main ?: SlateUi.energy, sage, Modifier.weight(1f),
+                dimColor = ki?.main?.copy(alpha = 0.7f), aura = ki?.aura.orEmpty())
         }
-        LadderCell(uiString(R.string.sahha_form_kiai), uiString(R.string.sahha_form_kiai_range), surge, SlateUi.surge, sage,
-            Modifier.weight(1f), dimColor = SlateUi.surge.copy(alpha = 0.7f))
+        if (!sage) {
+            LadderCell(uiString(R.string.sahha_form_kiai), uiString(R.string.sahha_form_kiai_range), surge, SlateUi.surge, sage,
+                Modifier.weight(1f), dimColor = SlateUi.surge.copy(alpha = 0.7f))
+        }
     }
 }
 
 @Composable
-private fun LadderCell(name: String, range: String, on: Boolean, color: Color, sage: Boolean, modifier: Modifier, dimColor: Color? = null) {
+private fun LadderCell(
+    name: String, range: String, on: Boolean, color: Color, sage: Boolean, modifier: Modifier,
+    dimColor: Color? = null, aura: List<Color> = emptyList(),
+) {
     val shape = if (sage) RoundedCornerShape(12.dp) else RoundedCornerShape(2.dp)
+    // A two-tone or many-tone rung is edged with all of its colours.
+    val edge = if (aura.size >= 2) {
+        Brush.linearGradient(aura.map { it.copy(alpha = if (on) 1f else 0.35f) })
+    } else {
+        SolidColor(if (on) color else (dimColor?.copy(alpha = 0.35f) ?: SlateUi.alertBorder))
+    }
     Column(
         modifier.clip(shape)
             .background(if (on) color.copy(alpha = 0.16f) else SlateUi.card, shape)
-            .border(1.dp, if (on) color else (dimColor?.copy(alpha = 0.35f) ?: SlateUi.alertBorder), shape)
+            .border(if (on && aura.size >= 2) 1.5.dp else 1.dp, edge, shape)
             .padding(vertical = 7.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

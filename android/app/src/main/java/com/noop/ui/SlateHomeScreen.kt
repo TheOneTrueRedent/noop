@@ -389,7 +389,8 @@ fun SlateHomeScreen(
             // Fork-only (Saħħa): the day's form, the orb, and the Kiai surge when Effort is past the band.
             val effort21 = effortRaw?.let { UnitFormatter.effortValue(it, EffortScale.WHOOP) }
             val band = optimalStrainRange(charge)
-            val surge = isToday && com.noop.sahha.SahhaForm.surging(effort21, band?.high)
+            // Sage has no surge state: its forms carry the colour. The Kiai surge is Conqueror's.
+            val surge = !SahhaLook.sage && isToday && com.noop.sahha.SahhaForm.surging(effort21, band?.high)
             val hrvHistory = remember(days, rowKey) {
                 days.filter { it.day < rowKey }.takeLast(30).mapNotNull { it.avgHrv }
             }

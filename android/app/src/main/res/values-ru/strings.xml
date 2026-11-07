@@ -2908,9 +2908,9 @@
     <string name="sahha_photo_steps">%1$s шагов</string>
     <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
     <string name="sahha_look_title">Стиль</string>
-    <string name="sahha_look_sage">Мудрец</string>
+    <string name="sahha_look_sage">Страж</string>
     <string name="sahha_look_conqueror">Завоеватель</string>
-    <string name="sahha_look_detail">Два тёмных стиля с одними и теми же цифрами. Мудрец: нефрит и золото, спокойный, но мощный. Завоеватель: бронированный фиолетовый и багровый.</string>
+    <string name="sahha_look_detail">Два тёмных стиля с одними и теми же цифрами. Страж: аура, восходящая от зелёно-золотой к переливающемуся серебру, спокойный, но мощный. Завоеватель: бронированный фиолетовый и багровый.</string>
     <string name="sahha_form_seiza">Seiza</string>
     <string name="sahha_form_shu">Shu</string>
     <string name="sahha_form_ha">Ha</string>

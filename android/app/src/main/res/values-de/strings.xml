@@ -3016,9 +3016,9 @@
     <string name="sahha_photo_steps">%1$s Schritte</string>
     <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
     <string name="sahha_look_title">Stil</string>
-    <string name="sahha_look_sage">Weiser</string>
+    <string name="sahha_look_sage">Wächter</string>
     <string name="sahha_look_conqueror">Eroberer</string>
-    <string name="sahha_look_detail">Zwei dunkle Stile mit denselben Zahlen. Weiser: Jade und Gold, ruhig, aber kraftvoll. Eroberer: gepanzertes Violett und Karmesin.</string>
+    <string name="sahha_look_detail">Zwei dunkle Stile mit denselben Zahlen. Wächter: eine Aura, die von Grüngold bis zu schimmerndem Silber aufsteigt, ruhig, aber kraftvoll. Eroberer: gepanzertes Violett und Karmesin.</string>
     <string name="sahha_form_seiza">Seiza</string>
     <string name="sahha_form_shu">Shu</string>
     <string name="sahha_form_ha">Ha</string>

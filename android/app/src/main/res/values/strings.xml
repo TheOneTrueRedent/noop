@@ -3032,9 +3032,9 @@
     <string name="sahha_photo_steps">%1$s steps</string>
     <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
     <string name="sahha_look_title">Look</string>
-    <string name="sahha_look_sage">Sage</string>
+    <string name="sahha_look_sage">Sentinel</string>
     <string name="sahha_look_conqueror">Conqueror</string>
-    <string name="sahha_look_detail">Two dark looks with the same numbers. Sage: jade and gold, calm but powerful. Conqueror: armoured violet and crimson.</string>
+    <string name="sahha_look_detail">Two dark looks with the same numbers. Sentinel: an aura that climbs from green-gold to shifting silver, calm but powerful. Conqueror: armoured violet and crimson.</string>
     <string name="sahha_form_seiza">Seiza</string>
     <string name="sahha_form_shu">Shu</string>
     <string name="sahha_form_ha">Ha</string>

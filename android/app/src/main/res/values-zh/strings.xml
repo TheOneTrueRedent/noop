@@ -2968,9 +2968,9 @@
     <string name="sahha_photo_steps">%1$s 步</string>
     <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
     <string name="sahha_look_title">风格</string>
-    <string name="sahha_look_sage">贤者</string>
+    <string name="sahha_look_sage">哨卫</string>
     <string name="sahha_look_conqueror">征服者</string>
-    <string name="sahha_look_detail">两种深色风格，数字相同。贤者：玉绿与金色，沉静而强大。征服者：装甲般的紫色与绯红。</string>
+    <string name="sahha_look_detail">两种深色风格，数字相同。哨卫：光环从金绿色升至流转的银色，沉静而强大。征服者：装甲般的紫色与绯红。</string>
     <string name="sahha_form_seiza">Seiza</string>
     <string name="sahha_form_shu">Shu</string>
     <string name="sahha_form_ha">Ha</string>

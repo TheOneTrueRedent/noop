@@ -2971,9 +2971,9 @@
     <string name="sahha_photo_steps">%1$s passi</string>
     <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
     <string name="sahha_look_title">Stile</string>
-    <string name="sahha_look_sage">Saggio</string>
+    <string name="sahha_look_sage">Sentinella</string>
     <string name="sahha_look_conqueror">Conquistatore</string>
-    <string name="sahha_look_detail">Due stili scuri con gli stessi numeri. Saggio: giada e oro, calmo ma potente. Conquistatore: viola e cremisi corazzati.</string>
+    <string name="sahha_look_detail">Due stili scuri con gli stessi numeri. Sentinella: un\'aura che sale dal verde oro a un argento cangiante, calma ma potente. Conquistatore: viola e cremisi corazzati.</string>
     <string name="sahha_form_seiza">Seiza</string>
     <string name="sahha_form_shu">Shu</string>
     <string name="sahha_form_ha">Ha</string>

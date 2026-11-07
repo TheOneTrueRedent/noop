@@ -3029,9 +3029,9 @@
     <string name="sahha_photo_steps">%1$s kroków</string>
     <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
     <string name="sahha_look_title">Styl</string>
-    <string name="sahha_look_sage">Mędrzec</string>
+    <string name="sahha_look_sage">Strażnik</string>
     <string name="sahha_look_conqueror">Zdobywca</string>
-    <string name="sahha_look_detail">Dwa ciemne style z tymi samymi liczbami. Mędrzec: jadeit i złoto, spokojny, ale potężny. Zdobywca: opancerzony fiolet i karmazyn.</string>
+    <string name="sahha_look_detail">Dwa ciemne style z tymi samymi liczbami. Strażnik: aura wznosząca się od zielonozłotej do mieniącego się srebra, spokojny, ale potężny. Zdobywca: opancerzony fiolet i karmazyn.</string>
     <string name="sahha_form_seiza">Seiza</string>
     <string name="sahha_form_shu">Shu</string>
     <string name="sahha_form_ha">Ha</string>

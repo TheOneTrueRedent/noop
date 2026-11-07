@@ -3003,9 +3003,9 @@
     <string name="sahha_photo_steps">%1$s pasos</string>
     <!-- Fork-only (Saħħa): looks, forms, sleeping HR, check-in, caffeine, Marishi, Shugyō. -->
     <string name="sahha_look_title">Estilo</string>
-    <string name="sahha_look_sage">Sabio</string>
+    <string name="sahha_look_sage">Centinela</string>
     <string name="sahha_look_conqueror">Conquistador</string>
-    <string name="sahha_look_detail">Dos estilos oscuros con los mismos números. Sabio: jade y oro, sereno pero poderoso. Conquistador: violeta y carmesí acorazados.</string>
+    <string name="sahha_look_detail">Dos estilos oscuros con los mismos números. Centinela: un aura que asciende del verde dorado a un plateado cambiante, sereno pero poderoso. Conquistador: violeta y carmesí acorazados.</string>
     <string name="sahha_form_seiza">Seiza</string>
     <string name="sahha_form_shu">Shu</string>
     <string name="sahha_form_ha">Ha</string>
