@@ -140,6 +140,9 @@ class MainActivity : ComponentActivity() {
         // Load the Light/Dark/System + chart-colour preferences before first composition so the theme
         // and chart ramps are correct from the very first frame (no flash).
         AppearancePrefs.load(this)
+        SlateLook.load(this)   // fork: Slate look token swap, before first composition
+        SahhaLook.load(this)   // fork: Saħħa look over the Slate layout (needs SlateLook loaded first)
+        QuestPrefs.load(this)  // fork: the Aura orb tint a chest unlocked
         ChartStylePrefs.load(this)
         AccentPrefs.load(this)   // chrome accent colour (mint / WHOOP blue / custom), live snapshot state
         // Decode the optional on-device profile photo (if set) before first composition so the Today

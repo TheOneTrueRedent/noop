@@ -192,6 +192,17 @@ class ProfileStore(private val prefs: SharedPreferences) {
     val age: Int
         get() = yearsFromDob(dateOfBirthMillis).coerceIn(AGE_MIN, AGE_MAX)
 
+    /** Fork-only (Saħħa): age to the day from [dateOfBirthMillis] ([com.noop.sahha.ExactAge]). It is the
+     *  age every analytics reader gets through [toUserProfile] (Fitness Age, Tanaka HRmax, calories), so
+     *  the app matches Home Assistant; [age] stays whole years for display and the backup whitelist. */
+    val exactAge: Double
+        get() {
+            val zone = java.time.ZoneId.systemDefault()
+            val dob = java.time.Instant.ofEpochMilli(dateOfBirthMillis).atZone(zone).toLocalDate()
+            return com.noop.sahha.ExactAge.years(dob, java.time.LocalDate.now(zone))
+                .coerceIn(AGE_MIN.toDouble(), AGE_MAX.toDouble() + 0.999)
+        }
+
     /**
      * Date of birth as epoch millis — the canonical source of truth for [age] (#146). The getter
      * lazily migrates a pre-#146 stored age (or a restored legacy `age`, see [applyBackup]) into an
@@ -291,7 +302,8 @@ class ProfileStore(private val prefs: SharedPreferences) {
     fun toUserProfile(): UserProfile = UserProfile(
         weightKg = weightKg,
         heightCm = heightCm,
-        age = age.toDouble(),
+        // Fork-only (Saħħa): age to the day, so Fitness Age (and HRmax/calories) match Home Assistant.
+        age = exactAge,
         sex = sex,
         stepTicksPerStep = stepTicksPerStep,
         waistCm = waistCm,
@@ -724,6 +736,7 @@ fun SettingsScreen(
     var rhythmEnabled by remember { mutableStateOf(RhythmConsent.isEnabled(context)) }
     var coachSignals by remember { mutableStateOf(NoopPrefs.coachSignals(context)) }
     var autoDetectWorkouts by remember { mutableStateOf(NoopPrefs.autoDetectWorkouts(context)) }
+    var autoTrackActivities by remember { mutableStateOf(AutoActivityPrefs.enabled(context)) }
     var journalReminder by remember { mutableStateOf(NoopPrefs.journalReminderEnabled(context)) }
     // Keep the screen on during a manual workout recording (#703), default OFF. The live-workout
     // screen reads this same "workoutKeepScreenOn" key. String shared verbatim with the iOS/Mac twin
@@ -1012,6 +1025,10 @@ fun SettingsScreen(
                         onPlus = { mutate { profile.setAge(profile.age + 1) } },
                     )
                 }
+                SettingsRowDivider()
+                // Fork-only (Saħħa): the real date of birth. The stepper above can only re-anchor it to
+                // "today minus N years", which makes age-to-the-day (Fitness Age) wrong by up to a year.
+                SahhaDateOfBirthRow(profile = profile, onChanged = { mutate { } })
                 SettingsRowDivider()
                 SettingsFormRow(label = uiString(R.string.l10n_settings_screen_sex_e301dd60)) {
                     SegmentedPillControl(
@@ -1540,6 +1557,25 @@ fun SettingsScreen(
                     },
                 )
             }
+            SettingsRowDivider()
+            // Fork: Slate look — one switch for the calm slate canvas, ring gauges, solid cards and a trimmed
+            // Today. Off restores exactly what it changed. The local mirrors below are re-read so the rows
+            // under it reflect the new values at once.
+            // Fork-only (Saħħa): Sage or Conqueror, both dark, both over the Slate layout (SahhaLook.kt).
+            SettingsFormRow(label = uiString(R.string.sahha_look_title)) {
+                SegmentedPillControl(
+                    items = AppLook.entries.toList(),
+                    selection = SahhaLook.look,
+                    label = {
+                        when (it) {
+                            AppLook.SAGE -> uiString(R.string.sahha_look_sage)
+                            AppLook.CONQUEROR -> uiString(R.string.sahha_look_conqueror)
+                        }
+                    },
+                    onSelect = { SahhaLook.select(context, it) },
+                )
+            }
+            Text(uiString(R.string.sahha_look_detail), style = NoopType.caption, color = Palette.textTertiary)
             SettingsRowDivider()
             // Theme presets — one-tap bundles coordinating accent + chart world + backdrop + card opacity.
             // Derived (no stored value): tweaking any control below flips this to Custom.
@@ -3381,6 +3417,17 @@ fun SettingsScreen(
                     },
                 )
                 SettingsRowDivider()
+                // Fork-only (Saħħa): automatic tracking of walks, runs and exercise (AutoActivityTracking.kt).
+                SettingsToggleRow(
+                    title = uiString(R.string.sahha_auto_track_title),
+                    detail = uiString(R.string.sahha_auto_track_detail),
+                    checked = autoTrackActivities,
+                    onCheckedChange = {
+                        autoTrackActivities = it
+                        AutoActivityPrefs.setEnabled(context, it)
+                    },
+                )
+                SettingsRowDivider()
                 SettingsToggleRow(
                     title = uiString(R.string.l10n_journal_reminder_journal_reminder_0fdc0d9c),
                     detail = uiString(R.string.l10n_journal_reminder_show_a_today_card_reminding_you_to_log_your_journal_8228bc77),
@@ -3767,9 +3814,11 @@ fun SettingsScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    Text("NOOP", style = NoopType.title2, color = Palette.textPrimary)
+                    Text(uiString(R.string.brand_name), style = NoopType.title2, color = Palette.textPrimary)
                     StatePill("v${BuildConfig.VERSION_NAME}", tone = StrandTone.Neutral, showsDot = false)
                 }
+                // Fork-only: the PolyForm Required Notice and the upstream credit, kept visible in the app.
+                Text(uiString(R.string.brand_built_on), style = NoopType.caption, color = Palette.textTertiary)
 
                 // Project home — NOOP's code, releases, issues and wiki live on GitHub.
                 val projectHomeInteraction = remember { MutableInteractionSource() }

@@ -3,10 +3,12 @@
      - logs/    : the strap-log export (LogExport) + 5/MG raw capture
      - reports/ : the shareable offline trends report PDF (TrendsReport, #436)
      - exports/ : GPX/FIT workout route export (RouteExportShare)
-     - recaps/  : weekly-recap PNG share (RecapShare) -->
+     - recaps/  : weekly-recap PNG share (RecapShare), and the Saħħa photo card PNG
+     - photos/  : fork-only, the system camera's output for the Saħħa photo card -->
 <paths>
     <cache-path name="logs" path="logs/" />
     <cache-path name="reports" path="reports/" />
     <cache-path name="exports" path="exports/" />
     <cache-path name="recaps" path="recaps/" />
+    <cache-path name="photos" path="photos/" />
 </paths>

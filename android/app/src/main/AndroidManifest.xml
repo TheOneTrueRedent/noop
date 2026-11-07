@@ -121,6 +121,10 @@
          Connect silently drops the runtime request and live workouts never write back (#412). -->
     <uses-permission android:name="android.permission.health.WRITE_EXERCISE" />
     <uses-permission android:name="android.permission.health.WRITE_DISTANCE" />
+    <!-- Fork fix: VO2 max writeback (#1553) requests WRITE_VO2_MAX (HealthConnectWriter.VO2MAX_PERMISSIONS)
+         but it was never declared, so Health Connect could not grant it and every writeback reported
+         PERMISSION_DENIED ("Sharing paused - permission was revoked") with no way to re-grant. -->
+    <uses-permission android:name="android.permission.health.WRITE_VO2_MAX" />
     <uses-permission android:name="android.permission.health.READ_VO2_MAX" />
     <uses-permission android:name="android.permission.health.READ_WEIGHT" />
     <uses-permission android:name="android.permission.health.READ_BODY_FAT" />

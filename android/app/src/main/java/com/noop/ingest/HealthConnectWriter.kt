@@ -78,6 +78,14 @@ object HealthConnectWriter {
     /** How far back to write. Recomputation only ever touches recent nights; 60 days is generous. */
     private const val WINDOW_DAYS = 60L
 
+    /** Health Connect's accepted heart-rate range (HeartRateRecord.Sample validation). */
+    private const val HC_MIN_BPM = 1
+    private const val HC_MAX_BPM = 300
+
+    /** HR records per insert call: each holds up to 1000 samples, so 10 keeps a call well under the
+     *  Binder transaction limit. */
+    private const val HR_RECORDS_PER_INSERT = 10
+
     private val WRITE_RECORDS: List<KClass<out Record>> = listOf(
         RestingHeartRateRecord::class,
         HeartRateVariabilityRmssdRecord::class,
@@ -228,14 +236,23 @@ object HealthConnectWriter {
         val floor = now - WINDOW_DAYS * 86_400
         val frontier = maxOf(NoopPrefs.hcHrFrontier(context), floor)
 
-        val samples = repo.hrSamplesForDevice(deviceId, from = frontier + 1, to = now, limit = 200_000)
+        // Fork fix: read the same active ∪ archived ∪ canonical union every other HR reader uses
+        // ([WhoopRepository.hrSamplesUnion], #908/#1193). A single-id read of the active strap exports
+        // NOTHING when the raw stream is banked under another registered id (the diagnostics'
+        // "samples are under 'my-whoop' instead" split), freezing Health Connect heart rate while the
+        // rest of the app still sees it. Single-WHOOP installs resolve to one id, so this is unchanged there.
+        val samples = repo.hrSamplesUnion(deviceId, from = frontier + 1, to = now, limit = 200_000)
             .map { HealthExportPlan.HrPoint(it.ts, it.bpm) }
+            // Fork fix: Health Connect only accepts 1..300 bpm. HeartRateRecord.Sample throws on anything
+            // else, which failed the WHOLE heart-rate export (reported as REMOTE_ERROR) and left the
+            // frontier parked forever on the first out-of-range sample.
+            .filter { it.bpm in HC_MIN_BPM..HC_MAX_BPM }
         if (samples.isEmpty()) return 0
 
         // Workout + sleep windows where the full-resolution series matters; everything else decimates.
         val windows = buildList {
-            repo.workouts(deviceId, frontier, now).forEach { add(HealthExportPlan.Window(it.startTs, it.endTs)) }
-            repo.sleepSessionsForDevice(deviceId, frontier, now).forEach { add(HealthExportPlan.Window(it.startTs, it.endTs)) }
+            repo.workoutsUnion(deviceId, frontier, now).forEach { add(HealthExportPlan.Window(it.startTs, it.endTs)) }
+            repo.sleepSessionsUnion(deviceId, frontier, now).forEach { add(HealthExportPlan.Window(it.startTs, it.endTs)) }
         }
 
         val plan = HealthExportPlan.heartRate(samples, windows, frontier)
@@ -259,8 +276,18 @@ object HealthConnectWriter {
                 metadata = Metadata(clientRecordId = c.clientId, clientRecordVersion = version),
             )
         }
-        val n = insertChunked(client, records)
-        NoopPrefs.setHcHrFrontier(context, plan.newFrontierSec)
+        // Fork fix: a backlog (days of HR after any outage) was sent as up to 1000 records x 1000 samples
+        // in ONE insert call, which overflows the Binder transaction limit; every later attempt then failed
+        // the same way and the backlog only grew. Insert a few records per call and persist the frontier
+        // after each successful batch so progress survives a later failure.
+        var n = 0
+        val batches = plan.chunks.zip(records).chunked(HR_RECORDS_PER_INSERT)
+        for ((i, batch) in batches.withIndex()) {
+            client.insertRecords(batch.map { it.second })
+            n += batch.size
+            val frontierAfter = if (i == batches.lastIndex) plan.newFrontierSec else batch.last().first.endSec
+            NoopPrefs.setHcHrFrontier(context, frontierAfter)
+        }
         return n
     }
 

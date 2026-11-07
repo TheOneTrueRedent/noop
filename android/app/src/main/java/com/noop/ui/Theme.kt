@@ -582,7 +582,7 @@ fun NoopTheme(content: @Composable () -> Unit) {
         AppearanceMode.DARK -> true
         AppearanceMode.SYSTEM -> isSystemInDarkTheme()
     }
-    val tokens = if (dark) DarkTokens else LightTokens
+    val tokens = SlateLook.tokensFor(dark)  // fork: Slate replaces Dark while the Slate look is on
     if (Palette.active !== tokens) Palette.active = tokens
 
     // Status-/nav-bar icon appearance: light icons on the dark theme, dark icons on the warm-paper
